@@ -73,17 +73,16 @@ void insertModel(Mesh **list, int nv, float * vArr, int nt, int * tArr, float sc
 	for(int i =0; i< nv; i++)
 	{
 		Vector normal = { 0.0, 0.0, 0.0};
-//		int numOfFaces = 0;
+
 		for (int j = 0; j < nt; ++j) {
 
 			if (mesh->triangles[j].vInds[0] == i || mesh->triangles[j].vInds[1] == i || mesh->triangles[j].vInds[2] == i){
 				normal = Add(normal, faceNormals[j]);
-//				numOfFaces++;
+
 			}
 		}
-		mesh->vnorms[i] = Normalize(normal); //ScalarVecMul(1.0/(double)numOfFaces, normal);
+		mesh->vnorms[i] = Normalize(normal);
 	}
-
 
 
 	//default code
@@ -93,7 +92,6 @@ void insertModel(Mesh **list, int nv, float * vArr, int nt, int * tArr, float sc
 //		mesh->vnorms[i].x = rnd();
 //		mesh->vnorms[i].y = rnd();
 //		mesh->vnorms[i].z = rnd();
-////		PrintVector("norm",mesh->vnorms[i]);
 //	}
 
 	mesh->next = *list;

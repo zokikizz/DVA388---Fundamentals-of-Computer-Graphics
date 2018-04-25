@@ -160,7 +160,8 @@ void renderMesh(Mesh *mesh) {
 	glBindVertexArray(mesh->vao);
 
 	// To accomplish wireframe rendering (can be removed to get filled triangles)
-
+	// z buffer
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
@@ -170,8 +171,6 @@ void renderMesh(Mesh *mesh) {
 	glCullFace(GL_BACK);
 	glFrontFace(GL_CCW);
 
-	glDepthRangef(0.0,1.0);
-	glEnable(GL_DEPTH_TEST);
 
 //	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	// Draw all triangles

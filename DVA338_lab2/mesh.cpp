@@ -56,7 +56,7 @@ void insertModel(Mesh **list, int nv, float * vArr, int nt, int * tArr, float sc
 	// Replace the code below that simply sets some arbitrary normal values
 
 	Vector faceNormals[nt];
-	Vector normalA, normalB, noramlC;
+	Vector normalA;
 	for(int i =0; i < nt; i++)
 	{
 		faceNormals[i]= {0,0,0};
@@ -64,16 +64,6 @@ void insertModel(Mesh **list, int nv, float * vArr, int nt, int * tArr, float sc
 		normalA = FindNormalForTriange(mesh->vertices[mesh->triangles[i].vInds[0]],
 											  mesh->vertices[mesh->triangles[i].vInds[1]],
 											  mesh->vertices[mesh->triangles[i].vInds[2]]);
-
-//		normalB = FindNormalForTriange(mesh->vertices[mesh->triangles[i].vInds[1]],
-//									   mesh->vertices[mesh->triangles[i].vInds[2]],
-//									   mesh->vertices[mesh->triangles[i].vInds[0]]);
-//
-//		noramlC = FindNormalForTriange(mesh->vertices[mesh->triangles[i].vInds[2]],
-//									   mesh->vertices[mesh->triangles[i].vInds[0]],
-//									   mesh->vertices[mesh->triangles[i].vInds[1]]);
-//
-//		faceNormals[i] = Normalize(Add(normalA, Add(normalB, noramlC)));
 
 		faceNormals[i] = normalA;
 
@@ -83,20 +73,16 @@ void insertModel(Mesh **list, int nv, float * vArr, int nt, int * tArr, float sc
 	for(int i =0; i< nv; i++)
 	{
 		Vector normal = { 0.0, 0.0, 0.0};
-		int numOfFaces = 0;
+
 		for (int j = 0; j < nt; ++j) {
 
 			if (mesh->triangles[j].vInds[0] == i || mesh->triangles[j].vInds[1] == i || mesh->triangles[j].vInds[2] == i){
 				normal = Add(normal, faceNormals[j]);
-				numOfFaces++;
+
 			}
 		}
-//
-//		PrintVector("Normals", normal);
-		mesh->vnorms[i] = Normalize(normal); //ScalarVecMul(1.0/(double)numOfFaces, normal);
-//		PrintVector("Num",mesh->vnorms[i]);
+		mesh->vnorms[i] = Normalize(normal);
 	}
-
 
 
 	//default code
@@ -106,7 +92,6 @@ void insertModel(Mesh **list, int nv, float * vArr, int nt, int * tArr, float sc
 //		mesh->vnorms[i].x = rnd();
 //		mesh->vnorms[i].y = rnd();
 //		mesh->vnorms[i].z = rnd();
-////		PrintVector("norm",mesh->vnorms[i]);
 //	}
 
 	mesh->next = *list;
@@ -118,8 +103,6 @@ Vector FindNormalForTriange(Vector pointA, Vector pointB, Vector pointC)
 	Vector normal;
 	Vector U, V;
 
-//	if(pointB.x > pointC.x)
-//	{
 	U.x = pointB.x - pointA.x;
 	U.y = pointB.y - pointA.y;
 	U.z = pointB.z - pointA.z;
@@ -128,17 +111,6 @@ Vector FindNormalForTriange(Vector pointA, Vector pointB, Vector pointC)
 	V.y = pointC.y - pointA.y;
 	V.z = pointC.z - pointA.z;
 
-//	}
-//	else
-//	{
-//		U.x = pointC.x - pointA.x;
-//		U.y = pointC.y - pointA.y;
-//		U.z = pointC.z - pointA.z;
-//
-//		V.x = pointB.x - pointA.x;
-//		V.y = pointB.y - pointA.y;
-//		V.z = pointB.z - pointA.z;
-//	}
 	normal =  CrossProduct(U, V);
 
 //	float sin_alpha = Length(ret) / (Length(U) * Length(V) );
