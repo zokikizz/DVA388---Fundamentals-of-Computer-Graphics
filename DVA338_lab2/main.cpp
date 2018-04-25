@@ -19,9 +19,6 @@ using namespace std;
 int screen_width = 1024;
 int screen_height = 768;
 
-int indexOfModel = 0;
-int totalNumOfModel = 0;
-
 #define PI 3.14159265
 
 bool rep  = true;
@@ -145,7 +142,6 @@ void renderMesh(Mesh *mesh) {
 	Matrix M; // model matrix
 	Matrix W;
 
-	fprintf(stderr, "\nmesh param: %d, %d\n",indexOfModel, totalNumOfModel);
 	ModelTransforamtions(W, mesh->translationX,mesh->translationY, mesh->translationZ, mesh->rotationX,
 							 mesh->rotationY,mesh->rotationZ,mesh->scaleX, mesh->scaleY, mesh->scaleZ);
 	M = MatMatMul(PV,W);
@@ -168,10 +164,8 @@ void renderMesh(Mesh *mesh) {
 
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
-	glFrontFace(GL_CCW);
+	glFrontFace(GL_CW);
 
-	glDepthRangef(0.0,1.0);
-	glEnable(GL_DEPTH_TEST);
 
 //	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	// Draw all triangles
@@ -239,13 +233,6 @@ void changeSize(int w, int h) {
 }
 
 void keypress(unsigned char key, int x, int y) {
-	Mesh *currentModel = meshList;
-	int i = 0;
-	while (i < indexOfModel)
-	{
-		currentModel = currentModel->next;
-		i++;
-	}
 	switch(key) {
 	case 'z':
 		cam.position.z -= 0.2f;
@@ -287,54 +274,50 @@ void keypress(unsigned char key, int x, int y) {
 		orto = !orto;
 		break;
 	case 'w':
-		currentModel->translationX += 1.0;
+		meshList[0].translationX += 1.0;
 		break;
 	case 'W':
-		currentModel->translationX -= 1.0;
+		meshList[0].translationX -= 1.0;
 		break;
 	case 's':
-		currentModel->translationY += 1.0;
+		meshList[0].translationY += 1.0;
 		break;
 	case 'S':
-		currentModel->translationY -= 1.0;
+		meshList[0].translationY -= 1.0;
 		break;
 	case 'a':
-		currentModel->translationZ += 1.0;
+		meshList[0].translationZ += 1.0;
 		break;
 	case 'A':
-		currentModel->translationZ -= 1.0;
+		meshList[0].translationZ -= 1.0;
 		break;
 	case 'r':
-		currentModel->rotationX += 0.1;
+		meshList[0].rotationX += 0.1;
 		break;
 	case 'R':
-		currentModel->rotationX -= 0.1;
+		meshList[0].rotationX -= 0.1;
 		break;
 	case 'e':
-		currentModel->rotationY += 0.1;
+		meshList[0].rotationY += 0.1;
 		break;
 	case 'E':
-		currentModel->rotationY -= 0.1;
+		meshList[0].rotationY -= 0.1;
 		break;
 	case 'd':
-		currentModel->rotationZ += 0.1;
+		meshList[0].rotationZ += 0.1;
 		break;
 	case 'D':
-		currentModel->rotationZ -= 0.1;
+		meshList[0].rotationZ -= 0.1;
 		break;
 	case 't':
-		currentModel->scaleX += 0.1;
-		currentModel->scaleY += 0.1;
-		currentModel->scaleZ += 0.1;
+		meshList[0].scaleX += 0.1;
+		meshList[0].scaleY += 0.1;
+		meshList[0].scaleZ += 0.1;
 		break;
 	case 'T':
-		currentModel->scaleX -= 0.1;
-		currentModel->scaleY -= 0.1;
-		currentModel->scaleZ -= 0.1;
-
-		break;
-	case 'm':
-		indexOfModel = (indexOfModel + 1) % totalNumOfModel;
+		meshList[0].scaleX -= 0.1;
+		meshList[0].scaleY -= 0.1;
+		meshList[0].scaleZ -= 0.1;
 		break;
 	case 'Q':
 	case 'q':
@@ -348,14 +331,10 @@ void keypress(unsigned char key, int x, int y) {
 void init(void) {
 	// Compile and link the given shader program (vertex shader and fragment shader)
 	prepareShaderProgram(vs_n2c_src, fs_ci_src);
-	indexOfModel = 0;
-	totalNumOfModel = 0;
 
 	// Setup OpenGL buffers for rendering of the meshes
 	Mesh * mesh = meshList;
 	while (mesh != NULL) {
-		fprintf(stderr, "%d\n", totalNumOfModel);
-		totalNumOfModel = totalNumOfModel+ 1;
 		prepareMesh(mesh);
 		mesh = mesh->next;
 	}
@@ -417,7 +396,7 @@ int main(int argc, char **argv) {
 	//insertModel(&meshList, triceratops.nov, triceratops.verts, triceratops.nof, triceratops.faces, 3.0);
 //	insertModel(&meshList, bunny.nov, bunny.verts, bunny.nof, bunny.faces, 60.0);
 	insertModel(&meshList, cube.nov, cube.verts, cube.nof, cube.faces, 5.0);
-	 //insertModel(&meshList, frog.nov, frog.verts, frog.nof, frog.faces, 2.5);
+	//insertModel(&meshList, frog.nov, frog.verts, frog.nof, frog.faces, 2.5);
 //	insertModel(&meshList, knot.nov, knot.verts, knot.nof, knot.faces, 1.0);
 //	insertModel(&meshList, sphere.nov, sphere.verts, sphere.nof, sphere.faces, 5.0);
 	//insertModel(&meshList, teapot.nov, teapot.verts, teapot.nof, teapot.faces, 3.0);

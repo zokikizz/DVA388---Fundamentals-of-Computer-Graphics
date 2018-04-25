@@ -22,11 +22,11 @@
       <file leaf-file-name="main.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="179">
-              <caret line="146" column="24" selection-start-line="146" selection-start-column="24" selection-end-line="146" selection-end-column="24" />
+            <state relative-caret-position="344">
+              <caret line="197" column="21" lean-forward="true" selection-start-line="197" selection-start-column="21" selection-end-line="197" selection-end-column="21" />
               <folding>
                 <element signature="e#112#159#0" expanded="true" />
-                <marker date="1524591543999" expanded="true" signature="4929:4931" ph="..." />
+                <marker date="1524644831367" expanded="true" signature="5102:5104" ph="..." />
               </folding>
             </state>
           </provider>
@@ -35,8 +35,8 @@
       <file leaf-file-name="mesh.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/mesh.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="179">
-              <caret line="12" column="4" lean-forward="true" selection-start-line="12" selection-start-column="4" selection-end-line="22" selection-end-column="24" />
+            <state relative-caret-position="434">
+              <caret line="45" column="7" selection-start-line="45" selection-start-column="7" selection-end-line="45" selection-end-column="7" />
             </state>
           </provider>
         </entry>
@@ -44,8 +44,8 @@
       <file leaf-file-name="mesh.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/mesh.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="404">
-              <caret line="33" column="10" selection-start-line="33" selection-start-column="10" selection-end-line="33" selection-end-column="10" />
+            <state relative-caret-position="194">
+              <caret line="106" selection-start-line="106" selection-end-line="106" />
             </state>
           </provider>
         </entry>
@@ -54,7 +54,7 @@
         <entry file="file://$PROJECT_DIR$/models/mesh_cube.h">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="210">
-              <caret line="14" lean-forward="true" selection-start-line="14" selection-end-line="14" />
+              <caret line="14" selection-start-line="14" selection-end-line="14" />
             </state>
           </provider>
         </entry>
@@ -62,8 +62,8 @@
       <file leaf-file-name="algebra.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/algebra.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="509">
-              <caret line="46" column="26" selection-start-line="46" selection-start-column="26" selection-end-line="46" selection-end-column="26" />
+            <state relative-caret-position="314">
+              <caret line="37" lean-forward="true" selection-start-line="37" selection-end-line="37" />
             </state>
           </provider>
         </entry>
@@ -71,8 +71,8 @@
       <file leaf-file-name="algebra.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/algebra.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="254">
-              <caret line="236" column="36" selection-start-line="236" selection-start-column="36" selection-end-line="236" selection-end-column="36" />
+            <state relative-caret-position="29">
+              <caret line="107" lean-forward="true" selection-start-line="107" selection-end-line="107" />
             </state>
           </provider>
         </entry>
@@ -81,7 +81,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>V</find>
       <find>cam</find>
       <find>disp</find>
       <find>display</find>
@@ -108,6 +107,10 @@
       <find>render</find>
       <find>PRin</find>
       <find>shprg</find>
+      <find>meshLis</find>
+      <find>init</find>
+      <find>meshList</find>
+      <find>totalNumOfModel</find>
     </findStrings>
   </component>
   <component name="IdeDocumentHistory">
@@ -115,9 +118,9 @@
       <list>
         <option value="$PROJECT_DIR$/algebra.h" />
         <option value="$PROJECT_DIR$/mesh.h" />
+        <option value="$PROJECT_DIR$/algebra.cpp" />
         <option value="$PROJECT_DIR$/mesh.cpp" />
         <option value="$PROJECT_DIR$/main.cpp" />
-        <option value="$PROJECT_DIR$/algebra.cpp" />
       </list>
     </option>
   </component>
@@ -130,7 +133,7 @@
   <component name="OCFindUsagesOptions" text="true" ivars="false" properties="true" derivedClasses="false" />
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="1984" />
-    <option name="y" value="-1091" />
+    <option name="y" value="-11" />
     <option name="width" value="1857" />
     <option name="height" value="1092" />
   </component>
@@ -139,23 +142,18 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
             <path>
-              <item name="DVA338_labsrc" type="b2602c69:ProjectViewProjectNode" />
-              <item name="DVA338_labsrc" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="DVA338_labsrc" type="b2602c69:ProjectViewProjectNode" />
-              <item name="DVA338_labsrc" type="462c0819:PsiDirectoryNode" />
-              <item name="models" type="462c0819:PsiDirectoryNode" />
+              <item name="DVA338_lab1" type="b2602c69:ProjectViewProjectNode" />
+              <item name="DVA338_lab1" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -196,11 +194,14 @@
       <workItem from="1524229760847" duration="5991000" />
       <workItem from="1524408912728" duration="13850000" />
       <workItem from="1524500910500" duration="20250000" />
+      <workItem from="1524595434612" duration="437000" />
+      <workItem from="1524639051125" duration="234000" />
+      <workItem from="1524639681720" duration="5252000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="103278000" />
+    <option name="totallyTimeSpent" value="109201000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -212,15 +213,15 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="64" y="-1091" width="1857" height="1092" extended-state="6" />
+    <frame x="1984" y="-11" width="1857" height="1092" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.487988" visible="true" weight="0.18867925" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4834835" visible="true" weight="0.18867925" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32924336" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="8" show_stripe_button="false" />
       <window_info anchor="bottom" id="Run" order="2" />
-      <window_info id="Structure" order="1" sideWeight="0.512012" side_tool="true" visible="true" weight="0.18867925" />
+      <window_info id="Structure" order="1" sideWeight="0.5165165" side_tool="true" visible="true" weight="0.18867925" />
       <window_info anchor="bottom" id="Terminal" order="7" visible="true" weight="0.3190184" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
@@ -258,7 +259,7 @@
           <caret line="314" column="4" selection-start-line="314" selection-start-column="4" selection-end-line="314" selection-end-column="4" />
           <folding>
             <element signature="e#112#159#0" expanded="true" />
-            <marker date="1524591543999" expanded="true" signature="4929:4931" ph="..." />
+            <marker date="1524644831367" expanded="true" signature="5102:5104" ph="..." />
           </folding>
         </state>
       </provider>
@@ -311,7 +312,7 @@
           <caret line="44" lean-forward="true" selection-start-line="44" selection-end-line="46" selection-end-column="7" />
           <folding>
             <element signature="e#112#159#0" expanded="true" />
-            <marker date="1524591543999" expanded="true" signature="4929:4931" ph="..." />
+            <marker date="1524644831367" expanded="true" signature="5102:5104" ph="..." />
           </folding>
         </state>
       </provider>
@@ -364,7 +365,7 @@
           <caret line="154" lean-forward="true" selection-start-line="154" selection-end-line="154" />
           <folding>
             <element signature="e#112#159#0" expanded="true" />
-            <marker date="1524591543999" expanded="true" signature="4929:4931" ph="..." />
+            <marker date="1524644831367" expanded="true" signature="5102:5104" ph="..." />
           </folding>
         </state>
       </provider>
@@ -403,7 +404,7 @@
           <caret line="174" column="81" selection-start-line="174" selection-start-column="81" selection-end-line="174" selection-end-column="81" />
           <folding>
             <element signature="e#112#159#0" expanded="true" />
-            <marker date="1524591543999" expanded="true" signature="4929:4931" ph="..." />
+            <marker date="1524644831367" expanded="true" signature="5102:5104" ph="..." />
           </folding>
         </state>
       </provider>
@@ -442,7 +443,7 @@
           <caret line="189" column="54" lean-forward="true" selection-start-line="189" selection-start-column="54" selection-end-line="189" selection-end-column="54" />
           <folding>
             <element signature="e#112#159#0" expanded="true" />
-            <marker date="1524591543999" expanded="true" signature="4929:4931" ph="..." />
+            <marker date="1524644831367" expanded="true" signature="5102:5104" ph="..." />
           </folding>
         </state>
       </provider>
@@ -481,7 +482,7 @@
           <caret line="349" column="41" selection-start-line="349" selection-start-column="41" selection-end-line="349" selection-end-column="41" />
           <folding>
             <element signature="e#112#159#0" expanded="true" />
-            <marker date="1524591543999" expanded="true" signature="4929:4931" ph="..." />
+            <marker date="1524644831367" expanded="true" signature="5102:5104" ph="..." />
           </folding>
         </state>
       </provider>
@@ -587,46 +588,46 @@
     <entry file="file://$PROJECT_DIR$/models/mesh_cube.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="210">
-          <caret line="14" lean-forward="true" selection-start-line="14" selection-end-line="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/algebra.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="509">
-          <caret line="46" column="26" selection-start-line="46" selection-start-column="26" selection-end-line="46" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mesh.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="179">
-          <caret line="12" column="4" lean-forward="true" selection-start-line="12" selection-start-column="4" selection-end-line="22" selection-end-column="24" />
+          <caret line="14" selection-start-line="14" selection-end-line="14" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/mesh.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="404">
-          <caret line="33" column="10" selection-start-line="33" selection-start-column="10" selection-end-line="33" selection-end-column="10" />
+        <state relative-caret-position="194">
+          <caret line="106" selection-start-line="106" selection-end-line="106" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mesh.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="434">
+          <caret line="45" column="7" selection-start-line="45" selection-start-column="7" selection-end-line="45" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/algebra.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="314">
+          <caret line="37" lean-forward="true" selection-start-line="37" selection-end-line="37" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="179">
-          <caret line="146" column="24" selection-start-line="146" selection-start-column="24" selection-end-line="146" selection-end-column="24" />
+        <state relative-caret-position="344">
+          <caret line="197" column="21" lean-forward="true" selection-start-line="197" selection-start-column="21" selection-end-line="197" selection-end-column="21" />
           <folding>
             <element signature="e#112#159#0" expanded="true" />
-            <marker date="1524591543999" expanded="true" signature="4929:4931" ph="..." />
+            <marker date="1524644831367" expanded="true" signature="5102:5104" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/algebra.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="254">
-          <caret line="236" column="36" selection-start-line="236" selection-start-column="36" selection-end-line="236" selection-end-column="36" />
+        <state relative-caret-position="29">
+          <caret line="107" lean-forward="true" selection-start-line="107" selection-end-line="107" />
         </state>
       </provider>
     </entry>
