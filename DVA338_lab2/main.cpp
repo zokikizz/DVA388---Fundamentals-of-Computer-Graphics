@@ -15,21 +15,8 @@ using namespace std;
 #include "shaders.h"
 #include "mesh.h"
 #include <cmath>
+#include <GL/gl.h>
 
-int screen_width = 1024;
-int screen_height = 768;
-
-int indexOfModel = 0;
-int totalNumOfModel = 0;
-
-#define PI 3.14159265
-
-bool rep  = true;
-
-//rotation matix
-Matrix X, Y, Z;
-
-bool orto = false;
 
 
 Mesh *meshList = NULL; // Global pointer to linked list of triangle meshes
@@ -45,6 +32,23 @@ GLuint shprg; // Shader program id
 // P is the projection transform
 // PV = P * V is the combined view-projection transform
 Matrix V, P, PV;
+
+
+
+// added
+
+bool orto = false;
+
+int screen_width = 1024;
+int screen_height = 768;
+
+int indexOfModel = 0;
+int totalNumOfModel = 0;
+
+// shading
+Vector Ia = { 0, 0, 0 };
+Vector Id = { 0, 0, 0 };
+Vector Is = { 0, 0, 0 };
 
 
 void print_log(GLuint object) {
@@ -145,7 +149,6 @@ void renderMesh(Mesh *mesh) {
 	Matrix M; // model matrix
 	Matrix W;
 
-	fprintf(stderr, "\nmesh param: %d, %d\n",indexOfModel, totalNumOfModel);
 	ModelTransforamtions(W, mesh->translationX,mesh->translationY, mesh->translationZ, mesh->rotationX,
 							 mesh->rotationY,mesh->rotationZ,mesh->scaleX, mesh->scaleY, mesh->scaleZ);
 	M = MatMatMul(PV,W);
@@ -155,6 +158,36 @@ void renderMesh(Mesh *mesh) {
 //	glUniformMatrix4fv(loc_PV, 1, GL_FALSE, PV.e);
 
 	glUniformMatrix4fv(loc_PV, 1, GL_FALSE, M.e);
+
+	// to set model matrix for vertex shader
+	GLint loc_M = glGetUniformLocation(shprg,"modelMatrix");
+	glUniformMatrix4fv(loc_M, 1, GL_FALSE, W.e);
+
+
+
+	//set light color
+
+	GLint loc_Light_color = glGetUniformLocation(shprg,"light");
+	glUniform4f(loc_Light_color, 1.0f, 1.0f, 1.0f, 1.0f);
+
+
+	//color of object
+	GLint loc_obj_color = glGetUniformLocation(shprg,"Objcolor");
+	glUniform4f(loc_obj_color, 1.0f, 0.5f, 0.31f, 1.0f);
+
+
+
+	GLint loc_LightPos = glGetUniformLocation(shprg,"LightPos");
+	glUniform3f(loc_LightPos, cam.position.x, cam.position.y, cam.position.z);
+
+//	GLint lPos = glGetAttribLocation(shprg, "LightPos");
+//	glEnableVertexAttribArray(lPos);
+//	glVertexAttribPointer(lPos, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+//	shprg.setVec3("LightPos", cam.position);
+//
+
+	GLint loc_ViewPos = glGetUniformLocation(shprg,"viewPos");
+	glUniform3f(loc_ViewPos , cam.position.x, cam.position.y, cam.position.z);
 
 	// Select current resources
 	glBindVertexArray(mesh->vao);
@@ -185,7 +218,6 @@ void display(void) {
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
 	// Assignment 1: Calculate the transform to view coordinates yourself
 	// The matrix V should be calculated from camera parameters
 	// Therefore, you need to replace this hard-coded transform.
@@ -202,6 +234,7 @@ void display(void) {
 	// Therefore, you need to replace this hard-coded transform.
 
 	// aspect ratio is connected to resolution (if it is 640x480 then it is 4:3) for full hd is 16:9
+// original code
 //	P.e[0] = 1.299038f; P.e[4] = 0.000000f; P.e[ 8] =  0.000000f; P.e[12] =  0.0f;
 //	P.e[1] = 0.000000f; P.e[5] = 1.732051f; P.e[ 9] =  0.000000f; P.e[13] =  0.0f;
 //	P.e[2] = 0.000000f; P.e[6] = 0.000000f; P.e[10] = -1.000200f; P.e[14] = -2.00000f;
@@ -215,6 +248,7 @@ void display(void) {
 
 	// This finds the combined view-projection matrix
 	PV = MatMatMul(P, V);
+
 
 	// Select the shader program to be used during rendering
 	glUseProgram(shprg);
@@ -330,7 +364,6 @@ void keypress(unsigned char key, int x, int y) {
 		currentModel->scaleX -= 0.1;
 		currentModel->scaleY -= 0.1;
 		currentModel->scaleZ -= 0.1;
-
 		break;
 	case 'm':
 		indexOfModel = (indexOfModel + 1) % totalNumOfModel;
@@ -347,17 +380,46 @@ void keypress(unsigned char key, int x, int y) {
 void init(void) {
 	// Compile and link the given shader program (vertex shader and fragment shader)
 	prepareShaderProgram(vs_n2c_src, fs_ci_src);
+//	prepareShaderProgram(vs_n2c_src, vertex_shader_src);
+
 	indexOfModel = 0;
 	totalNumOfModel = 0;
 
 	// Setup OpenGL buffers for rendering of the meshes
 	Mesh * mesh = meshList;
 	while (mesh != NULL) {
-		fprintf(stderr, "%d\n", totalNumOfModel);
 		totalNumOfModel = totalNumOfModel+ 1;
 		prepareMesh(mesh);
 		mesh = mesh->next;
 	}
+
+	glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+
+//    GLfloat light_ambient     [] = { 0.0f, 0.0f, 0.0f, 1.0f };  /* default value */
+//    GLfloat light_diffuse     [] = { 1.0f, 1.0f, 1.0f, 1.0f };  /* default value */
+//    GLfloat light_specular    [] = { 1.0f, 1.0f, 1.0f, 1.0f };  /* default value */
+//    GLfloat light_position    [] = { 1.0f, 1.0f, 1.0f, 0.0f };  /* NOT default value */
+//    GLfloat lightModel_ambient[] = { 0.2f, 0.2f, 0.2f, 1.0f };  /* default value */
+//    GLfloat material_ambient  [] = { 0.2f, 0.2f, 0.2f, 1.0f };  /* default value */
+//    GLfloat material_diffuse  [] = { 0.8f, 0.8f, 0.8f, 1.0f };  /* default value */
+//    GLfloat material_specular [] = { 1.0f, 1.0f, 1.0f, 1.0f };  /* NOT default value */
+//    GLfloat material_emission [] = { 0.0f, 0.0f, 0.0f, 1.0f };  /* default value */
+
+
+	GLfloat ambient[] = { 0.2, 0.2, 0.2, 1.0};
+    GLfloat diffuse[] = { 0.8, 0.8, 0.8, 1.0};
+    GLfloat specular[] = { 1.0, 1.0, 1.0, 1.0};
+
+    glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
+
+    GLfloat position[] = { cam.position.x, cam.position.y, cam.position.z, 1.0};
+    glLightfv(GL_LIGHT0, GL_POSITION, position);
+//    glEnable(GL_LIGHT0);
+
 }
 
 void cleanUp(void) {
@@ -385,13 +447,14 @@ int main(int argc, char **argv) {
 
 	// Setup freeGLUT
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
 	glutInitWindowSize(screen_width, screen_height);
 	glutCreateWindow("DVA338 Programming Assignments");
 	glutDisplayFunc(display);
 	glutReshapeFunc(changeSize);
 	glutKeyboardFunc(keypress);
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
+
 
 	
 	// Specify your preferred OpenGL version and profile
@@ -412,7 +475,7 @@ int main(int argc, char **argv) {
 
 	// Insert the 3D models you want in your scene here in a linked list of meshes
 	// Note that "meshList" is a pointer to the first mesh and new meshes are added to the front of the list
-	insertModel(&meshList, cow.nov, cow.verts, cow.nof, cow.faces, 20.0);
+//	insertModel(&meshList, cow.nov, cow.verts, cow.nof, cow.faces, 20.0);
 	//insertModel(&meshList, triceratops.nov, triceratops.verts, triceratops.nof, triceratops.faces, 3.0);
 //	insertModel(&meshList, bunny.nov, bunny.verts, bunny.nof, bunny.faces, 60.0);
 	insertModel(&meshList, cube.nov, cube.verts, cube.nof, cube.faces, 5.0);

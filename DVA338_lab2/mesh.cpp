@@ -67,11 +67,12 @@ void insertModel(Mesh **list, int nv, float * vArr, int nt, int * tArr, float sc
 
 		faceNormals[i] = normalA;
 
-//		PrintVector("face", faceNormals[i]);
 	}
 
 	for(int i =0; i< nv; i++)
 	{
+
+		// find avg value of normals
 		Vector normal = { 0.0, 0.0, 0.0};
 
 		for (int j = 0; j < nt; ++j) {
@@ -82,6 +83,10 @@ void insertModel(Mesh **list, int nv, float * vArr, int nt, int * tArr, float sc
 			}
 		}
 		mesh->vnorms[i] = Normalize(normal);
+
+
+		// flat shading
+//		mesh->vnorms[i] = faceNormals[i];
 	}
 
 
