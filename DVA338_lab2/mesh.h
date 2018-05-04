@@ -7,6 +7,19 @@ typedef struct _Triangle {
 	int vInds[3]; //vertex indices
 } Triangle;
 
+typedef struct _Light {
+	Vector Ia = { 0, 0, 0 };
+	Vector Id = { 0, 0, 0 };
+	Vector Is = { 0, 0, 0 };
+
+
+	Vector position = { 0, 0, 0};
+
+	Vector color = { 1.0f, 1.0f, 1.0f};
+	float strength = 0.1;
+
+} Light;
+
 typedef struct _Mesh {
 	// added for 1.5
 	//rotation
@@ -22,6 +35,9 @@ typedef struct _Mesh {
 	double scaleY = 1.0;
 	double scaleZ = 1.0;
 	// end added for 1.5
+
+	// matirial of mesh
+	Vector matirialProp;
 
 	int nv;
 	Vector *vertices;
