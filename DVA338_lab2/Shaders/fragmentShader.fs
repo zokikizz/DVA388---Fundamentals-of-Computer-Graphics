@@ -25,10 +25,10 @@ out vec4 fColor;
 
 in vec3 vNormFr;
 in vec3 vPosFr;
-in mat4 modelMatrixFr;
-in vec3 viewPosFr;
+uniform mat4 modelMatrix;
+uniform vec3 viewPos;
 
-flat in int typeOfShadingFr;
+uniform int typeOfShading;
 
 uniform Material material;
 
@@ -39,17 +39,17 @@ uniform Light lights[NUM_LIGHTS];
 void main(void)
 {
 
-    if(typeOfShadingFr == 1)
+    if(typeOfShading == 1)
    {
           vec3 ambient = material.ambient * light.ambient;
 
           vec3 norm = normalize(vNormFr);
-          vec3 vertPos = vec3(modelMatrixFr * vec4(vPosFr, 1.0));
+          vec3 vertPos = vec3(modelMatrix * vec4(vPosFr, 1.0));
           vec3 lightDir = normalize(light.position - vertPos);
           float diff = max(dot(norm, lightDir), 0.0);
           vec3 diffuse = (diff * material.diffuse) * light.diffuse;
 
-          vec3 viewDir = normalize(viewPosFr - vertPos);
+          vec3 viewDir = normalize(viewPos - vertPos);
           vec3 reflectDir = reflect(-lightDir, norm);
           float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
           vec3 specular = (material.specular * spec) * light.specular;

@@ -19,11 +19,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="main.cpp" pinned="false" current-in-tab="true">
+      <file leaf-file-name="main.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="278">
-              <caret line="611" column="40" selection-start-line="611" selection-start-column="40" selection-end-line="611" selection-end-column="40" />
+            <state relative-caret-position="293">
+              <caret line="612" lean-forward="true" selection-start-line="612" selection-end-line="612" />
             </state>
           </provider>
         </entry>
@@ -80,17 +80,17 @@
       <file leaf-file-name="vertexShader.vs" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Shaders/vertexShader.vs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="761">
-              <caret line="89" column="22" selection-start-line="89" selection-start-column="22" selection-end-line="89" selection-end-column="22" />
+            <state relative-caret-position="315">
+              <caret line="21" lean-forward="true" selection-start-line="21" selection-end-line="21" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="fragmentShader.fs" pinned="false" current-in-tab="false">
+      <file leaf-file-name="fragmentShader.fs" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Shaders/fragmentShader.fs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="285">
-              <caret line="37" lean-forward="true" selection-start-line="37" selection-end-line="37" />
+            <state relative-caret-position="598">
+              <caret line="41" column="20" lean-forward="true" selection-start-line="41" selection-start-column="20" selection-end-line="41" selection-end-column="20" />
             </state>
           </provider>
         </entry>
@@ -108,9 +108,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>&quot;</find>
-      <find>cons</find>
-      <find>verSh</find>
       <find>else</find>
       <find>Mat</find>
       <find>materialFr</find>
@@ -136,8 +133,11 @@
       <find>viewPos</find>
       <find>lightColor</find>
       <find>init</find>
-      <find>fragPos</find>
+      <find>.fs</find>
       <find>light</find>
+      <find>fragPos</find>
+      <find>fr</find>
+      <find>fg</find>
     </findStrings>
     <replaceStrings>
       <replace>material</replace>
@@ -160,6 +160,8 @@
         <option value="$PROJECT_DIR$/fragmentShader.fs" />
         <option value="$PROJECT_DIR$/vertexShader.vs" />
         <option value="$PROJECT_DIR$/main.cpp" />
+        <option value="$PROJECT_DIR$/Shaders/fragmentShader.fs" />
+        <option value="$PROJECT_DIR$/Shaders/vertexShader.vs" />
       </list>
     </option>
   </component>
@@ -244,12 +246,12 @@
       <workItem from="1525416744878" duration="19028000" />
       <workItem from="1525513017968" duration="8464000" />
       <workItem from="1525599552006" duration="17448000" />
-      <workItem from="1525782640535" duration="13811000" />
+      <workItem from="1525782640535" duration="14468000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="92122000" />
+    <option name="totallyTimeSpent" value="92779000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="64" y="-11" width="1857" height="1092" extended-state="6" />
@@ -571,24 +573,24 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Shaders/fragmentShader.fs">
+    <entry file="file://$PROJECT_DIR$/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="37" lean-forward="true" selection-start-line="37" selection-end-line="37" />
+        <state relative-caret-position="293">
+          <caret line="612" lean-forward="true" selection-start-line="612" selection-end-line="612" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Shaders/vertexShader.vs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="761">
-          <caret line="89" column="22" selection-start-line="89" selection-start-column="22" selection-end-line="89" selection-end-column="22" />
+        <state relative-caret-position="315">
+          <caret line="21" lean-forward="true" selection-start-line="21" selection-end-line="21" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.cpp">
+    <entry file="file://$PROJECT_DIR$/Shaders/fragmentShader.fs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="278">
-          <caret line="611" column="40" selection-start-line="611" selection-start-column="40" selection-end-line="611" selection-end-column="40" />
+        <state relative-caret-position="598">
+          <caret line="41" column="20" lean-forward="true" selection-start-line="41" selection-start-column="20" selection-end-line="41" selection-end-column="20" />
         </state>
       </provider>
     </entry>

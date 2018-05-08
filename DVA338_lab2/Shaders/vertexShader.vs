@@ -20,7 +20,6 @@ struct Light {
    float quadratic;
 };
 
-
 in vec3 vPos;
 in vec3 vNorm;
 out vec4 color;
@@ -35,14 +34,10 @@ uniform vec3 viewPos;
 out mat4 modelMatrixFr; 
 out vec3 viewPosFr;
 
-flat out int typeOfShadingFr;
-
-
 out vec3 vNormFr;
 out vec3 vPosFr;
 
 uniform Material material;
-
 
 uniform Light light;
 #define NUM_LIGHTS 4
@@ -83,9 +78,6 @@ void main(void)
     else
     {
         color = abs(vec4(vNorm, 1.0));
-        typeOfShadingFr = typeOfShading;
-        modelMatrixFr = modelMatrix;
-        viewPosFr = viewPos;
         vNormFr = normalize(vNorm);
         vPosFr = vPos;
 
