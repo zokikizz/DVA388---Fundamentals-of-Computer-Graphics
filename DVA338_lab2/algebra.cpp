@@ -141,6 +141,55 @@ void Transformations(Matrix& V, float translationX, float translationY, float tr
 
 }
 
+void RotationOfLight(Vector& V, float rotationX, float rotationY, float rotationZ)
+{
+//	Matrix X;
+
+	X.e[0] = 1.0f; X.e[4] = 0.0f; X.e[ 8] = 0.0f; X.e[12] =   0.0f;
+	X.e[1] = 0.0f; X.e[5] = cos(rotationX); X.e[ 9] = -sin(rotationX); X.e[13] =   0.0f;
+	X.e[2] = 0.0f; X.e[6] = sin(rotationX); X.e[10] = cos(rotationX); X.e[14] = 0.0f;
+	X.e[3] = 0.0f; X.e[7] = 0.0f; X.e[11] = 0.0f; X.e[15] =   1.0f;
+
+
+	HomVector r = MatVecMul(X,V);
+
+	V.x = r.x;
+	V.y = r.y;
+	V.z = r.z;
+
+
+	//	Matrix Y;
+
+
+	Y.e[0] = cos(rotationY); Y.e[4] = 0.0f; Y.e[ 8] = sin(rotationY); Y.e[12] =   0.0f;
+	Y.e[1] = 0.0f; Y.e[5] = 1.0f; Y.e[ 9] = 0.0f; Y.e[13] =   0.0f;
+	Y.e[2] = -sin(rotationY); Y.e[6] = 0.0f; Y.e[10] = cos(rotationY); Y.e[14] = 0.0f;
+	Y.e[3] = 0.0f; Y.e[7] = 0.0f; Y.e[11] = 0.0f; Y.e[15] =   1.0f;
+
+
+	r = MatVecMul(Y,V);
+
+
+	V.x = r.x;
+	V.y = r.y;
+	V.z = r.z;
+	//	Matrix Z;
+
+
+	Z.e[0] = cos(rotationZ); Z.e[4] = -sin(rotationZ); Z.e[ 8] = 0.0f; Z.e[12] =   0.0f;
+	Z.e[1] = sin(rotationZ); Z.e[5] = cos(rotationZ); Z.e[ 9] = 0.0f; Z.e[13] =   0.0f;
+	Z.e[2] = 0.0f; Z.e[6] = 0.0f; Z.e[10] = 1.0f; Z.e[14] = 0.0f;
+	Z.e[3] = 0.0f; Z.e[7] = 0.0f; Z.e[11] = 0.0f; Z.e[15] =   1.0f;
+
+
+	r = MatVecMul(Z,V);
+
+
+	V.x = r.x;
+	V.y = r.y;
+	V.z = r.z;
+}
+
 void PerspectiveProjection(Matrix &P, double fov, int screen_width, int screen_height, double nearPlane,
 						   double farPlane)
 {

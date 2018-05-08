@@ -36,8 +36,13 @@ typedef struct _Mesh {
 	double scaleZ = 1.0;
 	// end added for 1.5
 
-	// matirial of mesh
-	Vector matirialProp;
+	// material of mesh
+
+	Vector ambient;
+	Vector diffuse;
+	Vector specular;
+	float shininess = 32.0;
+	//end material
 
 	int nv;
 	Vector *vertices;
@@ -61,5 +66,8 @@ void insertModel(Mesh ** objlist, int nv, float * vArr, int nt, int * tArr, floa
 
 Vector FindNormalForTriange(Vector pointA, Vector pointB, Vector pointC);
 Vector FindNormal(Triangle polygon, Mesh *mesh);
+
+char** loadShaderFromFile(char* filename);
+void printShader(char** shader);
 
 #endif

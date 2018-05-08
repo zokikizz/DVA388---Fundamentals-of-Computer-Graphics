@@ -3,11 +3,15 @@
 
 #include <cmath>
 
-#include <stdio.h>
+#include<stdio.h>
+#include<string.h>
 #include <iostream>
 using namespace std;
 
 bool test = true;
+
+#include <fstream>
+ifstream inFile;
 
 float rnd() {
 	return 2.0f * float(rand()) / float(RAND_MAX) - 1.0f;
@@ -55,49 +59,24 @@ void insertModel(Mesh **list, int nv, float * vArr, int nt, int * tArr, float sc
 	// Calculate and store suitable vertex normals for the mesh here.
 	// Replace the code below that simply sets some arbitrary normal values
 
-	Vector faceNormals[nt];
 	Vector normalA;
 	for(int i =0; i < nt; i++)
 	{
-		faceNormals[i]= {0,0,0};
+		normalA = FindNormalForTriange(mesh->vertices[mesh->triangles[i].vInds[1]],
+									   mesh->vertices[mesh->triangles[i].vInds[2]],
+									   mesh->vertices[mesh->triangles[i].vInds[0]]);
 
-		normalA = FindNormalForTriange(mesh->vertices[mesh->triangles[i].vInds[0]],
-											  mesh->vertices[mesh->triangles[i].vInds[1]],
-											  mesh->vertices[mesh->triangles[i].vInds[2]]);
-
-		faceNormals[i] = normalA;
+		mesh->vnorms[mesh->triangles[i].vInds[0]] = Add(mesh->vnorms[mesh->triangles[i].vInds[0]], normalA);
+		mesh->vnorms[mesh->triangles[i].vInds[1]] = Add(mesh->vnorms[mesh->triangles[i].vInds[1]], normalA);
+		mesh->vnorms[mesh->triangles[i].vInds[2]] = Add(mesh->vnorms[mesh->triangles[i].vInds[2]], normalA);
 
 	}
+
 
 	for(int i =0; i< nv; i++)
 	{
-
-		// find avg value of normals
-		Vector normal = { 0.0, 0.0, 0.0};
-
-		for (int j = 0; j < nt; ++j) {
-
-			if (mesh->triangles[j].vInds[0] == i || mesh->triangles[j].vInds[1] == i || mesh->triangles[j].vInds[2] == i){
-				normal = Add(normal, faceNormals[j]);
-
-			}
-		}
-		mesh->vnorms[i] = Normalize(normal);
-
-
-		// flat shading
-//		mesh->vnorms[i] = faceNormals[i];
+		mesh->vnorms[i] = Normalize(mesh->vnorms[i]);
 	}
-
-
-	//default code
-
-//	for(int i = 0; i < nv; i++)
-//	{
-//		mesh->vnorms[i].x = rnd();
-//		mesh->vnorms[i].y = rnd();
-//		mesh->vnorms[i].z = rnd();
-//	}
 
 	mesh->next = *list;
 	*list = mesh;
@@ -122,6 +101,50 @@ Vector FindNormalForTriange(Vector pointA, Vector pointB, Vector pointC)
 
 	return Normalize(normal);
 //	return ScalarVecMul(sin_alpha,CrossProduct(U,V));
+}
+
+char** loadShaderFromFile(char * filename) {
+	char line[256];
+	char **shader;
+	int numberOfLines = 0;
+
+
+	inFile.open(filename);
+
+	if (!inFile) {
+		cerr << "Unable to open file datafile.txt";
+		exit(1);   // call system to stop
+	}
+
+
+	while((inFile.getline(line,256)))
+		numberOfLines++;
+
+
+	shader = new char*[1];
+	shader[0] = new char[numberOfLines * 256];
+	for(int i = 0; i < (numberOfLines * 256); i++)
+		shader[0][i] = '\0';
+
+
+    inFile.close();
+	inFile.open(filename);
+
+	int currentLine;
+	while((inFile.getline(line,256)))
+	{
+		strcat(shader[0],line);
+		strcat(shader[0],"\n");
+	}
+
+	inFile.close();
+
+	return shader;
+}
+
+void printShader(char** shader)
+{
+	cout << shader[0] << "\n";
 }
 
 

@@ -16,7 +16,7 @@ using namespace std;
 #include "mesh.h"
 #include <cmath>
 #include <GL/gl.h>
-
+#include <SFML/Graphics.hpp>
 
 
 Mesh *meshList = NULL; // Global pointer to linked list of triangle meshes
@@ -47,9 +47,9 @@ int totalNumOfModel = 0;
 
 // shading
 Light light;
+Light lights[2];
 
 HomVector uniformColor { 1.0, 1.0, 1.0, 1.0};
-int phaseOfShading = 3;
 int typeOfShading = 0;
 
 
@@ -72,12 +72,13 @@ void print_log(GLuint object) {
 	free(log);
 }
 
-void prepareShaderProgram(const char ** vs_src, const char ** fs_src) {
+void prepareShaderProgram(char ** vs_src, char ** fs_src) {
 	GLint success = GL_FALSE;
 
 	shprg = glCreateProgram();
 
 	GLuint vs = glCreateShader(GL_VERTEX_SHADER);
+
 	glShaderSource(vs, 1, vs_src, NULL);
 	glCompileShader(vs);
 	glGetShaderiv(vs, GL_COMPILE_STATUS, &success);
@@ -151,7 +152,6 @@ void renderMesh(Mesh *mesh) {
 	Matrix M; // model matrix
 	Matrix W;
 
-	mesh->matirialProp = { 1.0f, 0.5f, 0.31f };
 
 	ModelTransforamtions(W, mesh->translationX,mesh->translationY, mesh->translationZ, mesh->rotationX,
 							 mesh->rotationY,mesh->rotationZ,mesh->scaleX, mesh->scaleY, mesh->scaleZ);
@@ -162,6 +162,11 @@ void renderMesh(Mesh *mesh) {
 //	glUniformMatrix4fv(loc_PV, 1, GL_FALSE, PV.e);
 
 	glUniformMatrix4fv(loc_PV, 1, GL_FALSE, M.e);
+
+	mesh->ambient = {1.0f, 0.5f, 0.31f};
+	mesh->diffuse = {1.0f, 0.5f, 0.31f};
+	mesh->specular = {0.5f, 0.5f, 0.5f};
+	mesh->shininess = 32.0f;
 
 
 	// trying changing uniform color
@@ -179,49 +184,6 @@ void renderMesh(Mesh *mesh) {
 		glUniform1i(loc_typeOfShaping, typeOfShading);
 	}
 
-	// 1 - ambient, 2 - ambient + diffuse , 3 - complete phong model
-	GLint loc_phase = glGetUniformLocation(shprg, "phase");
-	if (loc_phase != -1)
-	{
-		glUniform1i(loc_phase, phaseOfShading);
-	}
-
-	// matirial prop of mesh
-	GLint loc_matirialProp = glGetUniformLocation(shprg, "matirialProp");
-	if (loc_matirialProp != -1)
-	{
-//		PrintVector("mat", mesh->matirialProp);
-		glUniform3f(loc_matirialProp, mesh->matirialProp.x, mesh->matirialProp.y, mesh->matirialProp.z);
-	}
-
-	//light
-
-	light.position.x = cam.position.x;
-	light.position.y = cam.position.y;
-	light.position.z = cam.position.z;
-
-
-	// light color
-	GLint loc_lightColor = glGetUniformLocation(shprg, "lightColor");
-	if (loc_lightColor != -1)
-	{
-		glUniform3f(loc_lightColor, light.color.x, light.color.y, light.color.z);
-	}
-
-	// light ambient strength
-	GLint loc_ambientStrength = glGetUniformLocation(shprg, "ambientStrength");
-	if (loc_ambientStrength != -1)
-	{
-		glUniform1f(loc_ambientStrength, light.strength);
-	}
-
-	// light position
-	GLint loc_lightPos = glGetUniformLocation(shprg, "lightPosition");
-	if (loc_lightPos != -1)
-	{
-		glUniform3f(loc_lightPos, light.position.x, light.position.y, light.position.z);
-	}
-
 	// modelMatrix
 
 	GLint loc_modelMatrix = glGetUniformLocation(shprg, "modelMatrix");
@@ -229,6 +191,7 @@ void renderMesh(Mesh *mesh) {
 	{
 		glUniformMatrix4fv(loc_modelMatrix, 1, GL_FALSE, W.e);
 	}
+
 
 	//viewPos
 
@@ -239,71 +202,191 @@ void renderMesh(Mesh *mesh) {
 	}
 
 
+	// material
+	GLint loc_meshAmbient = glGetUniformLocation(shprg, "material.ambient");
+	if (loc_meshAmbient != -1)
+	{
+		glUniform3f(loc_meshAmbient, mesh->ambient.x, mesh->ambient.y, mesh->ambient.z);
+	}
+
+
+	GLint loc_meshDiffuse= glGetUniformLocation(shprg, "material.diffuse");
+	if (loc_meshDiffuse != -1)
+	{
+		glUniform3f(loc_meshDiffuse, mesh->diffuse.x, mesh->diffuse.y, mesh->diffuse.z);
+	}
+
+
+	GLint loc_meshSpecular = glGetUniformLocation(shprg, "material.specular");
+	if (loc_meshSpecular != -1)
+	{
+		glUniform3f(loc_meshSpecular, mesh->specular.x, mesh->specular.y, mesh->specular.z);
+	}
+
+	GLint loc_meshShininess = glGetUniformLocation(shprg, "material.shininess");
+	if (loc_meshShininess != -1)
+	{
+		glUniform1f(loc_meshShininess, 32.0);
+	}
 
 
 
-	//set light
-	glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-
-//    GLfloat light_ambient     [] = { 0.0f, 0.0f, 0.0f, 1.0f };  /* default value */
-//    GLfloat light_diffuse     [] = { 1.0f, 1.0f, 1.0f, 1.0f };  /* default value */
-//    GLfloat light_specular    [] = { 1.0f, 1.0f, 1.0f, 1.0f };  /* default value */
-//    GLfloat light_position    [] = { 1.0f, 1.0f, 1.0f, 0.0f };  /* NOT default value */
-//    GLfloat lightModel_ambient[] = { 0.2f, 0.2f, 0.2f, 1.0f };  /* default value */
-//    GLfloat material_ambient  [] = { 0.2f, 0.2f, 0.2f, 1.0f };  /* default value */
-//    GLfloat material_diffuse  [] = { 0.8f, 0.8f, 0.8f, 1.0f };  /* default value */
-//    GLfloat material_specular [] = { 1.0f, 1.0f, 1.0f, 1.0f };  /* NOT default value */
-//    GLfloat material_emission [] = { 0.0f, 0.0f, 0.0f, 1.0f };  /* default value */
-
-
-	GLfloat ambient[] = { 0.2, 0.2, 0.2, 1.0};
-	GLfloat diffuse[] = { 0.8, 0.8, 0.8, 1.0};
-	GLfloat specular[] = { 1.0, 1.0, 1.0, 1.0};
-
-	glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
-	glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
-
-	GLfloat position[] = { cam.position.x, cam.position.y, cam.position.z, 1.0};
-	glLightfv(GL_LIGHT0, GL_POSITION, position);
-	glEnable(GL_LIGHT0);
-
-
-
-
-
-
-
-
-
-
-	//set light color
-
-//	GLint loc_Light_color = glGetUniformLocation(shprg,"light");
-//	glUniform4f(loc_Light_color, 1.0f, 1.0f, 1.0f, 1.0f);
-
-
-	//color of object
-//	GLint loc_obj_color = glGetUniformLocation(shprg,"Objcolor");
-//	glUniform4f(loc_obj_color, 1.0f, 0.5f, 0.31f, 1.0f);
-
-
-
-
-//	GLint loc_LightPos = glGetUniformLocation(shprg,"LightPos");
-//	glEnableVertexAttribArray(loc_LightPos);
-//	glUniform3f(loc_LightPos, cam.position.x, cam.position.y, cam.position.z);
+//	char base[8];
+//	base[0] = '\0';
+//	strcpy(base, "lights[");
+//	char name[200];
+//	char tempVarName[200];
 //
-//	GLint lPos = glGetAttribLocation(shprg, "LightPos");
-//	glEnableVertexAttribArray(lPos);
-//	glVertexAttribPointer(lPos, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-//	shprg.setVec3("LightPos", cam.position);
+//	for(int i = 0; i < NUM_OF_LIGHTS; i++) {
+//		strcpy(name, base);
+//		strcat(name, '0' + i);
+//		strcat(name, "]");
+//
+//		strcpy(tempVarName, name);
+//		strcat(tempVarName, ".ambient");
+//
+//		// light
+//		GLint loc_lightAmbient = glGetUniformLocation(shprg, temp);
+//		if (loc_lightAmbient != -1)
+//		{
+//			glUniform3f(loc_lightAmbient , light.Ia.x, light.Ia.y, light.Ia.z);
+//		}
 //
 //
-//	GLint loc_ViewPos = glGetUniformLocation(shprg,"viewPos");
-//	glUniform3f(loc_ViewPos , cam.position.x, cam.position.y, cam.position.z);
+//		cout << temp << '\n';
+//
+//
+//		strcpy(tempVarName, name);
+//		strcat(tempVarName, ".diffuse");
+//
+//
+//		GLint loc_lightDiffuse = glGetUniformLocation(shprg, temp);
+//		if (loc_lightDiffuse != -1)
+//		{
+//			glUniform3f(loc_lightDiffuse, light.Id.x, light.Id.y, light.Id.z);
+//		}
+//
+//
+//		cout << temp << '\n';
+//
+//
+//		strcpy(tempVarName, name);
+//		strcat(tempVarName, ".specular");
+//
+//		GLint loc_lightSpecular = glGetUniformLocation(shprg, temp);
+//		if (loc_lightSpecular != -1)
+//		{
+//			glUniform3f(loc_lightSpecular, light.Is.x, light.Is.y, light.Is.z);
+//		}
+//
+//		cout << temp << '\n';
+//
+//
+//		strcpy(tempVarName, name);
+//		strcat(tempVarName, ".position");
+//
+//		GLint loc_lightPostion = glGetUniformLocation(shprg, temp);
+//		if (loc_lightPostion != -1)
+//		{
+//			glUniform3f(loc_lightPostion, light.position.x, light.position.y, light.position.z);
+//		}
+//
+//
+//		cout << temp << '\n';
+//
+//
+//		strcpy(tempVarName, name);
+//		strcat(tempVarName, ".constant");
+//
+//		GLint loc_lightconst = glGetUniformLocation(shprg, temp);
+//		if (loc_lightconst != -1)
+//		{
+//			glUniform1f(loc_lightconst, 1.0f);
+//		}
+//
+//		cout << temp << '\n';
+//
+//
+//		strcpy(tempVarName, name);
+//		strcat(tempVarName, ".linear");
+//
+//		GLint loc_lightLinear = glGetUniformLocation(shprg, temp);
+//		if (loc_lightLinear != -1)
+//		{
+//			glUniform1f(loc_lightLinear, 0.09f);
+//		}
+//
+//
+//		cout << temp << '\n';
+//
+//
+//		strcpy(tempVarName, name);
+//		strcat(tempVarName, ".quadratic");
+//
+//		GLint loc_lightQuad = glGetUniformLocation(shprg, temp);
+//		if (loc_lightQuad != -1)
+//		{
+//			glUniform1f(loc_lightQuad, 0.032f);
+//		}
+//
+//		cout << temp << '\n';
+//
+//
+//		//set end of string on beginning
+//		name[0] = '\0';
+//		tempVarName[0] = '\0';
+//	}
+
+
+	// light
+	GLint loc_lightAmbient = glGetUniformLocation(shprg, "light.ambient");
+	if (loc_lightAmbient != -1)
+	{
+		glUniform3f(loc_lightAmbient , light.Ia.x, light.Ia.y, light.Ia.z);
+	}
+
+
+	GLint loc_lightDiffuse = glGetUniformLocation(shprg, "light.diffuse");
+	if (loc_lightDiffuse != -1)
+	{
+		glUniform3f(loc_lightDiffuse, light.Id.x, light.Id.y, light.Id.z);
+	}
+
+	GLint loc_lightSpecular = glGetUniformLocation(shprg, "light.specular");
+	if (loc_lightSpecular != -1)
+	{
+		glUniform3f(loc_lightSpecular, light.Is.x, light.Is.y, light.Is.z);
+	}
+
+	GLint loc_lightPostion = glGetUniformLocation(shprg, "light.position");
+	if (loc_lightPostion != -1)
+	{
+		glUniform3f(loc_lightPostion, light.position.x, light.position.y, light.position.z);
+	}
+
+
+	GLint loc_lightconst = glGetUniformLocation(shprg, "light.constant");
+	if (loc_lightconst != -1)
+	{
+		glUniform1f(loc_lightconst, 1.0f);
+	}
+
+
+	GLint loc_lightLinear = glGetUniformLocation(shprg, "light.linear");
+	if (loc_lightLinear != -1)
+	{
+		glUniform1f(loc_lightLinear, 0.09f);
+	}
+
+
+	GLint loc_lightQuad = glGetUniformLocation(shprg, "light.quadratic");
+	if (loc_lightQuad != -1)
+	{
+		glUniform1f(loc_lightQuad, 0.032f);
+	}
+
+
+
 
 	// Select current resources
 	glBindVertexArray(mesh->vao);
@@ -314,11 +397,11 @@ void renderMesh(Mesh *mesh) {
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+//	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_FRONT);
-	glFrontFace(GL_CW);
+//	glEnable(GL_CULL_FACE);
+//	glCullFace(GL_BACK);
+//	glFrontFace(GL_CCW);
 
 
 //	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -350,11 +433,6 @@ void display(void) {
 	// Therefore, you need to replace this hard-coded transform.
 
 	// aspect ratio is connected to resolution (if it is 640x480 then it is 4:3) for full hd is 16:9
-// original code
-//	P.e[0] = 1.299038f; P.e[4] = 0.000000f; P.e[ 8] =  0.000000f; P.e[12] =  0.0f;
-//	P.e[1] = 0.000000f; P.e[5] = 1.732051f; P.e[ 9] =  0.000000f; P.e[13] =  0.0f;
-//	P.e[2] = 0.000000f; P.e[6] = 0.000000f; P.e[10] = -1.000200f; P.e[14] = -2.00000f;
-//	P.e[3] = 0.000000f; P.e[7] = 0.000000f; P.e[11] = -1.000000f; P.e[15] =  0.0f;
 
 	if(orto)
 		OrtoProjection(P, meshList->vertices, meshList->nv, cam.nearPlane, cam.farPlane);
@@ -364,6 +442,14 @@ void display(void) {
 
 	// This finds the combined view-projection matrix
 	PV = MatMatMul(P, V);
+
+	//light
+
+	light.position.x = cam.position.x;
+	light.position.y = cam.position.y;
+	light.position.z = cam.position.z;
+
+	RotationOfLight(light.position, -cam.rotation.x, -cam.rotation.y, -cam.rotation.z);
 
 
 	// Select the shader program to be used during rendering
@@ -498,14 +584,14 @@ void keypress(unsigned char key, int x, int y) {
 	case '4':
 		typeOfShading = 1 - typeOfShading;
 		break;
-	case '5':
-		phaseOfShading = 1;
+	case '8':
+		light.position.x += 1.0;
 		break;
-	case '6':
-		phaseOfShading = 2;
+	case '9':
+		light.position.y += 1.0;
 		break;
-	case '7':
-		phaseOfShading = 3;
+	case '0':
+		light.position.z += 1.0;
 		break;
 	case 'Q':
 	case 'q':
@@ -518,11 +604,21 @@ void keypress(unsigned char key, int x, int y) {
 
 void init(void) {
 	// Compile and link the given shader program (vertex shader and fragment shader)
-	prepareShaderProgram(vs_n2c_src, fs_ci_src);
-//	prepareShaderProgram(vs_n2c_src, vertex_shader_src);
+	char **verSh, **frSh;
+
+	verSh = loadShaderFromFile("vertexShader.vs");
+
+	cout << "\n" << "\n" << "\n";
+	frSh = loadShaderFromFile("fragmentShader.fs");
+
+	prepareShaderProgram(verSh, frSh);
 
 	indexOfModel = 0;
 	totalNumOfModel = 0;
+	light.Ia = {0.2f, 0.2f, 0.2f};
+	light.Id = { 0.5f, 0.5f, 0.5f};
+	light.Is = { 1.0f, 1.0f, 1.0f};
+
 
 	// Setup OpenGL buffers for rendering of the meshes
 	Mesh * mesh = meshList;
@@ -531,34 +627,6 @@ void init(void) {
 		prepareMesh(mesh);
 		mesh = mesh->next;
 	}
-
-	//set light
-	glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-
-//    GLfloat light_ambient     [] = { 0.0f, 0.0f, 0.0f, 1.0f };  /* default value */
-//    GLfloat light_diffuse     [] = { 1.0f, 1.0f, 1.0f, 1.0f };  /* default value */
-//    GLfloat light_specular    [] = { 1.0f, 1.0f, 1.0f, 1.0f };  /* default value */
-//    GLfloat light_position    [] = { 1.0f, 1.0f, 1.0f, 0.0f };  /* NOT default value */
-//    GLfloat lightModel_ambient[] = { 0.2f, 0.2f, 0.2f, 1.0f };  /* default value */
-//    GLfloat material_ambient  [] = { 0.2f, 0.2f, 0.2f, 1.0f };  /* default value */
-//    GLfloat material_diffuse  [] = { 0.8f, 0.8f, 0.8f, 1.0f };  /* default value */
-//    GLfloat material_specular [] = { 1.0f, 1.0f, 1.0f, 1.0f };  /* NOT default value */
-//    GLfloat material_emission [] = { 0.0f, 0.0f, 0.0f, 1.0f };  /* default value */
-
-
-	GLfloat ambient[] = { 0.2, 0.2, 0.2, 1.0};
-    GLfloat diffuse[] = { 0.8, 0.8, 0.8, 1.0};
-    GLfloat specular[] = { 1.0, 1.0, 1.0, 1.0};
-
-    glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
-
-    GLfloat position[] = { cam.position.x, cam.position.y, cam.position.z, 1.0};
-    glLightfv(GL_LIGHT0, GL_POSITION, position);
-    glEnable(GL_LIGHT0);
 
 }
 
@@ -615,8 +683,8 @@ int main(int argc, char **argv) {
 
 	// Insert the 3D models you want in your scene here in a linked list of meshes
 	// Note that "meshList" is a pointer to the first mesh and new meshes are added to the front of the list
-//	insertModel(&meshList, cow.nov, cow.verts, cow.nof, cow.faces, 20.0);
-	insertModel(&meshList, triceratops.nov, triceratops.verts, triceratops.nof, triceratops.faces, 3.0);
+	insertModel(&meshList, cow.nov, cow.verts, cow.nof, cow.faces, 20.0);
+//	insertModel(&meshList, triceratops.nov, triceratops.verts, triceratops.nof, triceratops.faces, 3.0);
 //	insertModel(&meshList, bunny.nov, bunny.verts, bunny.nof, bunny.faces, 60.0);
 //	insertModel(&meshList, cube.nov, cube.verts, cube.nof, cube.faces, 5.0);
 	 //insertModel(&meshList, frog.nov, frog.verts, frog.nof, frog.faces, 2.5);
