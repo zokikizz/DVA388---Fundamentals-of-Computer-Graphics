@@ -606,10 +606,10 @@ void init(void) {
 	// Compile and link the given shader program (vertex shader and fragment shader)
 	char **verSh, **frSh;
 
-	verSh = loadShaderFromFile("vertexShader.vs");
+	verSh = loadShaderFromFile("./Shaders/vertexShader.vs");
 
 	cout << "\n" << "\n" << "\n";
-	frSh = loadShaderFromFile("fragmentShader.fs");
+	frSh = loadShaderFromFile("./Shaders/fragmentShader.fs");
 
 	prepareShaderProgram(verSh, frSh);
 
