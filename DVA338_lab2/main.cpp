@@ -55,6 +55,7 @@ Light lights[NUM_OF_LIGHTS];
 
 HomVector uniformColor { 1.0, 1.0, 1.0, 1.0};
 int typeOfShading = 0;
+int cartoonShading = 1;
 
 
 void print_log(GLuint object) {
@@ -241,6 +242,14 @@ void renderMesh(Mesh *mesh) {
 	if (loc_meshShininess != -1)
 	{
 		glUniform1f(loc_meshShininess, 32.0);
+	}
+
+	
+	//cartoonShading
+	GLint loc_cartoonSh = glGetUniformLocation(shprg, "cartoonShading");
+	if ( loc_cartoonSh != -1)
+	{
+		glUniform1i( loc_cartoonSh, cartoonShading);
 	}
 
 
@@ -517,8 +526,8 @@ void changeSize(int w, int h) {
 }
 
 void keypress(unsigned char key, int x, int y) {
-	
-	PrintVector("0.position of lights[0]",lights[0].position);
+	fprintf(stderr, "cartoonShadeing: %d \n", cartoonShading);
+	// PrintVector("0.position of lights[0]",lights[0].position);
 	Mesh *currentModel = meshList;
 	int i = 0;
 	while (i < indexOfModel)
@@ -626,12 +635,17 @@ void keypress(unsigned char key, int x, int y) {
 		uniformColor.z -= 0.1f;
 		break;
 	// change type of shading ( 0 - G, 1 - Phong shading)
+	
+	case '5':
+		cartoonShading = (cartoonShading + 1) % 2;
+		break;
 	case '6':
 		typeOfShading = 1 - typeOfShading;
 		break;
 	case '7':
 		isMutplelightsMode = (isMutplelightsMode + 1) % 2;
 		break;
+	
 		
 	case '*':
 		lights[0].position.x = lights[0].position.x - 1.0f;
@@ -658,8 +672,6 @@ void keypress(unsigned char key, int x, int y) {
 		break;
 
 	}
-
-	PrintVector("1.position of lights[0]",lights[0].position);
 
 	glutPostRedisplay();
 }

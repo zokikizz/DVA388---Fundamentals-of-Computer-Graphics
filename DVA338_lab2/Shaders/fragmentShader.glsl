@@ -39,6 +39,7 @@ uniform Light light;
 #define NUM_LIGHTS 2
 uniform Light lights[NUM_LIGHTS];
 uniform int multipleLights;
+uniform int cartoonShading;
 
 vec3 caculateColorForOneLight(int index)
 {
@@ -69,31 +70,59 @@ vec3 caculateColorForOneLight(int index)
     return res;
 }
 
+vec4 cartoon()
+{
+    float intensity;
+	vec4 color;
+
+    vec3 normal = normalize(vNormFr);
+    vec3 vertPos = vec3(modelMatrix * vec4(vPosFr, 1.0));
+    vec3 lightDir = normalize(lights[0].position - vertPos);
+
+	intensity = dot(lightDir,normal);
+
+	if (intensity > 0.95)
+		color = vec4(1.0,0.5,0.5,1.0);
+	else if (intensity > 0.5)
+		color = vec4(0.6,0.3,0.3,1.0);
+	else if (intensity > 0.25)
+		color = vec4(0.4,0.2,0.2,1.0);
+	else
+		color = vec4(0.2,0.1,0.1,1.0);
+	return color;
+}
+
 void main(void)
 {
     if(typeOfShading == 1)
    {
-        if(multipleLights == 1)
-        {
-            vec3 ambient = material.ambient * lights[0].ambient;
-            vec3 temp = vec3(0.0f);
-            for(int i = 0; i < NUM_LIGHTS; i++)
+       if(cartoonShading == 1)
+       {
+           fColor = cartoon();
+       }
+       else
+       {
+            if(multipleLights == 1)
             {
-                temp += caculateColorForOneLight(i);
+                vec3 ambient = material.ambient * lights[0].ambient;
+                vec3 temp = vec3(0.0f);
+                for(int i = 0; i < NUM_LIGHTS; i++)
+                {
+                    temp += caculateColorForOneLight(i);
+                }
+                temp += ambient;
+                fColor = vec4(temp,1.0f);
             }
-            temp += ambient;
-            fColor = vec4(temp,1.0f);
-        }
-        else 
-        {
-            vec3 ambient = material.ambient * lights[0].ambient;
-            vec3 temp = vec3(0.0f);
-            temp = caculateColorForOneLight(0);
+            else 
+            {
+                vec3 ambient = material.ambient * lights[0].ambient;
+                vec3 temp = vec3(0.0f);
+                temp = caculateColorForOneLight(0);
 
-            temp += ambient;
-            fColor = vec4(temp,1.0f);
-        }
-        
+                temp += ambient;
+                fColor = vec4(temp,1.0f);
+            }
+       }
    }
    else
    {
