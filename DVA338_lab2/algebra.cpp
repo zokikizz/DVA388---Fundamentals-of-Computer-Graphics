@@ -305,3 +305,11 @@ void ScaleModel(Matrix& S,double x, double y, double z)
 
 }
 
+
+void SetLightPositon(Vector& pos, float x, float y, float z) 
+{
+	pos.x = x;
+	pos.y = y;
+	pos.z = z;
+}
+

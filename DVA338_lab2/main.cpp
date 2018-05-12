@@ -17,6 +17,7 @@ using namespace std;
 #include <cmath>
 #include <GL/gl.h>
 #include <SFML/Graphics.hpp>
+#include <string.h>
 
 
 Mesh *meshList = NULL; // Global pointer to linked list of triangle meshes
@@ -46,8 +47,11 @@ int indexOfModel = 0;
 int totalNumOfModel = 0;
 
 // shading
+
+int isMutplelightsMode = 1;
+const int NUM_OF_LIGHTS = 2;
 Light light;
-Light lights[2];
+Light lights[NUM_OF_LIGHTS];
 
 HomVector uniformColor { 1.0, 1.0, 1.0, 1.0};
 int typeOfShading = 0;
@@ -160,8 +164,12 @@ void renderMesh(Mesh *mesh) {
 	// Pass the viewing transform to the shader
 	GLint loc_PV = glGetUniformLocation(shprg, "PV");
 //	glUniformMatrix4fv(loc_PV, 1, GL_FALSE, PV.e);
-
 	glUniformMatrix4fv(loc_PV, 1, GL_FALSE, M.e);
+
+	
+	GLint loc_VM = glGetUniformLocation(shprg, "VM");
+	Matrix VM = MatMatMul(V, W);
+	glUniformMatrix4fv(loc_VM, 1, GL_FALSE, VM.e);
 
 	mesh->ambient = {1.0f, 0.5f, 0.31f};
 	mesh->diffuse = {1.0f, 0.5f, 0.31f};
@@ -192,6 +200,12 @@ void renderMesh(Mesh *mesh) {
 		glUniformMatrix4fv(loc_modelMatrix, 1, GL_FALSE, W.e);
 	}
 
+	// viewModelMatrix
+	GLint loc_modelViewMatrix = glGetUniformLocation(shprg, "viewModelMatrix");
+	if (loc_modelViewMatrix != -1)
+	{
+		glUniformMatrix4fv(loc_modelViewMatrix, 1, GL_FALSE, M.e);
+	}
 
 	//viewPos
 
@@ -231,160 +245,186 @@ void renderMesh(Mesh *mesh) {
 
 
 
-//	char base[8];
-//	base[0] = '\0';
-//	strcpy(base, "lights[");
-//	char name[200];
-//	char tempVarName[200];
-//
-//	for(int i = 0; i < NUM_OF_LIGHTS; i++) {
-//		strcpy(name, base);
-//		strcat(name, '0' + i);
-//		strcat(name, "]");
-//
-//		strcpy(tempVarName, name);
-//		strcat(tempVarName, ".ambient");
-//
-//		// light
-//		GLint loc_lightAmbient = glGetUniformLocation(shprg, temp);
-//		if (loc_lightAmbient != -1)
-//		{
-//			glUniform3f(loc_lightAmbient , light.Ia.x, light.Ia.y, light.Ia.z);
-//		}
-//
-//
-//		cout << temp << '\n';
-//
-//
-//		strcpy(tempVarName, name);
-//		strcat(tempVarName, ".diffuse");
-//
-//
-//		GLint loc_lightDiffuse = glGetUniformLocation(shprg, temp);
-//		if (loc_lightDiffuse != -1)
-//		{
-//			glUniform3f(loc_lightDiffuse, light.Id.x, light.Id.y, light.Id.z);
-//		}
-//
-//
-//		cout << temp << '\n';
-//
-//
-//		strcpy(tempVarName, name);
-//		strcat(tempVarName, ".specular");
-//
-//		GLint loc_lightSpecular = glGetUniformLocation(shprg, temp);
-//		if (loc_lightSpecular != -1)
-//		{
-//			glUniform3f(loc_lightSpecular, light.Is.x, light.Is.y, light.Is.z);
-//		}
-//
-//		cout << temp << '\n';
-//
-//
-//		strcpy(tempVarName, name);
-//		strcat(tempVarName, ".position");
-//
-//		GLint loc_lightPostion = glGetUniformLocation(shprg, temp);
-//		if (loc_lightPostion != -1)
-//		{
-//			glUniform3f(loc_lightPostion, light.position.x, light.position.y, light.position.z);
-//		}
-//
-//
-//		cout << temp << '\n';
-//
-//
-//		strcpy(tempVarName, name);
-//		strcat(tempVarName, ".constant");
-//
-//		GLint loc_lightconst = glGetUniformLocation(shprg, temp);
-//		if (loc_lightconst != -1)
-//		{
-//			glUniform1f(loc_lightconst, 1.0f);
-//		}
-//
-//		cout << temp << '\n';
-//
-//
-//		strcpy(tempVarName, name);
-//		strcat(tempVarName, ".linear");
-//
-//		GLint loc_lightLinear = glGetUniformLocation(shprg, temp);
-//		if (loc_lightLinear != -1)
-//		{
-//			glUniform1f(loc_lightLinear, 0.09f);
-//		}
-//
-//
-//		cout << temp << '\n';
-//
-//
-//		strcpy(tempVarName, name);
-//		strcat(tempVarName, ".quadratic");
-//
-//		GLint loc_lightQuad = glGetUniformLocation(shprg, temp);
-//		if (loc_lightQuad != -1)
-//		{
-//			glUniform1f(loc_lightQuad, 0.032f);
-//		}
-//
-//		cout << temp << '\n';
-//
-//
-//		//set end of string on beginning
-//		name[0] = '\0';
-//		tempVarName[0] = '\0';
-//	}
+
+	if(isMutplelightsMode == 1) 
+	{
+		char base[8];
+		base[0] = '\0';
+		strcpy(base, "lights[");
+		char name[200];
+		char tempVarName[200];
+		name[0] = '\0';
+		tempVarName[0] = '\0';
+		
+
+		for(int i = 0; i < NUM_OF_LIGHTS; i++) {
+				strcpy(name, base);
+			
+				name[strlen(name)] = '\0';
+				char num[2];
+				num[0] = '0' + i;
+				num[1] = '\0';
+				// cout << num << "\n";
+				strcat(name, num);
+				
+				name[strlen(name)] = '\0';
+				strcat(name, "]\0");
+
+				strcpy(tempVarName, name);
+				tempVarName[strlen(name)] = '\0';
+				strcat(tempVarName, ".ambient");
+				tempVarName[strlen(tempVarName)] = '\0';
+
+				
+				// light
+				GLint loc_lightAmbient = glGetUniformLocation(shprg, tempVarName);
+				if (loc_lightAmbient != -1)
+				{
+					glUniform3f(loc_lightAmbient , lights[i].Ia.x, lights[i].Ia.y, lights[i].Ia.z);
+				}
+				else
+				{
+					cout << "ERROR \n";
+				}
 
 
+				strcpy(tempVarName, name);
+				strcat(tempVarName, ".diffuse");
+				tempVarName[strlen(tempVarName)] = '\0';
+
+				GLint loc_lightDiffuse = glGetUniformLocation(shprg, tempVarName);
+				if (loc_lightDiffuse != -1)
+				{
+					glUniform3f(loc_lightDiffuse, lights[i].Id.x, lights[i].Id.y, lights[i].Id.z);
+				}
+				else
+				{
+					cout << "ERROR \n";
+				}
+
+
+				strcpy(tempVarName, name);
+				strcat(tempVarName, ".specular");
+				tempVarName[strlen(tempVarName)] = '\0';
+
+				GLint loc_lightSpecular = glGetUniformLocation(shprg, tempVarName);
+				if (loc_lightSpecular != -1)
+				{
+					glUniform3f(loc_lightSpecular, lights[i].Is.x, lights[i].Is.y, lights[i].Is.z);
+				}
+				else
+				{
+					cout << "ERROR \n";
+				}
+
+				strcpy(tempVarName, name);
+				strcat(tempVarName, ".position");
+				tempVarName[strlen(tempVarName)] = '\0';
+
+				GLint loc_lightPostion = glGetUniformLocation(shprg, tempVarName);
+				if (loc_lightPostion != -1)
+				{
+					glUniform3f(loc_lightPostion, lights[i].position.x, lights[i].position.y, lights[i].position.z);
+				}
+				else
+				{
+					cout << "ERROR \n";
+				}
+
+
+				strcpy(tempVarName, name);
+				strcat(tempVarName, ".constant");
+				tempVarName[strlen(tempVarName)] = '\0';
+
+				GLint loc_lightconst = glGetUniformLocation(shprg, tempVarName);
+				if (loc_lightconst != -1)
+				{
+					glUniform1f(loc_lightconst, 1.0f);
+				}
+				else
+				{
+					cout << "ERROR \n";
+				}
+
+				strcpy(tempVarName, name);
+				strcat(tempVarName, ".linear");
+				tempVarName[strlen(tempVarName)] = '\0';
+
+				GLint loc_lightLinear = glGetUniformLocation(shprg, tempVarName);
+				if (loc_lightLinear != -1)
+				{
+					glUniform1f(loc_lightLinear, 0.09f);
+				}
+				else
+				{
+					cout << "ERROR \n";
+				}
+
+				strcpy(tempVarName, name);
+				strcat(tempVarName, ".quadratic");
+
+				GLint loc_lightQuad = glGetUniformLocation(shprg, tempVarName);
+				if (loc_lightQuad != -1)
+				{
+					glUniform1f(loc_lightQuad, 0.032f);
+				}
+				else
+				{
+					cout << "ERROR \n";
+				}
+
+
+				//set end of string on beginning
+				name[0] = '\0';
+				tempVarName[0] = '\0';
+			}
+	}
+    
 	// light
 	GLint loc_lightAmbient = glGetUniformLocation(shprg, "light.ambient");
-	if (loc_lightAmbient != -1)
-	{
-		glUniform3f(loc_lightAmbient , light.Ia.x, light.Ia.y, light.Ia.z);
+	if (loc_lightAmbient != -1) {
+		glUniform3f(loc_lightAmbient, light.Ia.x, light.Ia.y, light.Ia.z);
 	}
 
 
 	GLint loc_lightDiffuse = glGetUniformLocation(shprg, "light.diffuse");
-	if (loc_lightDiffuse != -1)
-	{
+	if (loc_lightDiffuse != -1) {
 		glUniform3f(loc_lightDiffuse, light.Id.x, light.Id.y, light.Id.z);
 	}
 
 	GLint loc_lightSpecular = glGetUniformLocation(shprg, "light.specular");
-	if (loc_lightSpecular != -1)
-	{
+	if (loc_lightSpecular != -1) {
 		glUniform3f(loc_lightSpecular, light.Is.x, light.Is.y, light.Is.z);
 	}
 
 	GLint loc_lightPostion = glGetUniformLocation(shprg, "light.position");
-	if (loc_lightPostion != -1)
-	{
+	if (loc_lightPostion != -1) {
 		glUniform3f(loc_lightPostion, light.position.x, light.position.y, light.position.z);
 	}
 
 
 	GLint loc_lightconst = glGetUniformLocation(shprg, "light.constant");
-	if (loc_lightconst != -1)
-	{
+	if (loc_lightconst != -1) {
 		glUniform1f(loc_lightconst, 1.0f);
 	}
 
 
 	GLint loc_lightLinear = glGetUniformLocation(shprg, "light.linear");
-	if (loc_lightLinear != -1)
-	{
+	if (loc_lightLinear != -1) {
 		glUniform1f(loc_lightLinear, 0.09f);
 	}
 
 
 	GLint loc_lightQuad = glGetUniformLocation(shprg, "light.quadratic");
-	if (loc_lightQuad != -1)
-	{
+	if (loc_lightQuad != -1) {
 		glUniform1f(loc_lightQuad, 0.032f);
 	}
 
+	GLint loc_multiLights = glGetUniformLocation(shprg, "multipleLights");
+	if(loc_multiLights != -1)
+	{
+		glUniform1i(loc_multiLights, isMutplelightsMode);
+	}
 
 
 
@@ -432,7 +472,7 @@ void display(void) {
 	// The matrix P should be calculated from camera parameters
 	// Therefore, you need to replace this hard-coded transform.
 
-	// aspect ratio is connected to resolution (if it is 640x480 then it is 4:3) for full hd is 16:9
+	// aspect ratio is connected to resolution (if it is 640x480 then it is 4]3) for full hd is 16:9
 
 	if(orto)
 		OrtoProjection(P, meshList->vertices, meshList->nv, cam.nearPlane, cam.farPlane);
@@ -445,11 +485,14 @@ void display(void) {
 
 	//light
 
-	light.position.x = cam.position.x;
-	light.position.y = cam.position.y;
-	light.position.z = cam.position.z;
 
-	RotationOfLight(light.position, -cam.rotation.x, -cam.rotation.y, -cam.rotation.z);
+	//SetLightPositon(light.position, cam.position.x, cam.position.y, cam.position.z);
+
+	// SetLightPositon(lights[0].position, cam.position.x, cam.position.y, cam.position.z);
+
+	//RotationOfLight(light.position, -cam.rotation.x, -cam.rotation.y, -cam.rotation.z);
+
+	//	RotationOfLight(lights[0].position, -cam.rotation.x, -cam.rotation.y, -cam.rotation.z);
 
 
 	// Select the shader program to be used during rendering
@@ -474,6 +517,8 @@ void changeSize(int w, int h) {
 }
 
 void keypress(unsigned char key, int x, int y) {
+	
+	PrintVector("0.position of lights[0]",lights[0].position);
 	Mesh *currentModel = meshList;
 	int i = 0;
 	while (i < indexOfModel)
@@ -489,8 +534,8 @@ void keypress(unsigned char key, int x, int y) {
 		cam.position.z += 0.2f;
 		break;
 	case 'x':
-		cam.position.x -= 0.2f;
 		break;
+		cam.position.x -= 0.2f;
 	case 'X':
 		cam.position.x += 0.2f;
 		break;
@@ -581,17 +626,31 @@ void keypress(unsigned char key, int x, int y) {
 		uniformColor.z -= 0.1f;
 		break;
 	// change type of shading ( 0 - G, 1 - Phong shading)
-	case '4':
+	case '6':
 		typeOfShading = 1 - typeOfShading;
 		break;
+	case '7':
+		isMutplelightsMode = (isMutplelightsMode + 1) % 2;
+		break;
+		
+	case '*':
+		lights[0].position.x = lights[0].position.x - 1.0f;
+		break;
 	case '8':
-		light.position.x += 1.0;
+		lights[0].position.x = lights[0].position.x + 1.0f;
+		break;
+		
+	case '(':
+		lights[0].position.y = lights[0].position.y - 1.0f;
 		break;
 	case '9':
-		light.position.y += 1.0;
+		lights[0].position.y = lights[0].position.y + 1.0f;
 		break;
 	case '0':
-		light.position.z += 1.0;
+		lights[0].position.z = lights[0].position.z + 1.0f;
+		break;
+	case ')':
+		lights[0].position.z = lights[0].position.z - 1.0f;
 		break;
 	case 'Q':
 	case 'q':
@@ -599,6 +658,9 @@ void keypress(unsigned char key, int x, int y) {
 		break;
 
 	}
+
+	PrintVector("1.position of lights[0]",lights[0].position);
+
 	glutPostRedisplay();
 }
 
@@ -606,10 +668,10 @@ void init(void) {
 	// Compile and link the given shader program (vertex shader and fragment shader)
 	char **verSh, **frSh;
 
-	verSh = loadShaderFromFile("./Shaders/vertexShader.vs");
+	verSh = loadShaderFromFile("./Shaders/vertexShader.glsl");
 
 	cout << "\n" << "\n" << "\n";
-	frSh = loadShaderFromFile("./Shaders/fragmentShader.fs");
+	frSh = loadShaderFromFile("./Shaders/fragmentShader.glsl");
 
 	prepareShaderProgram(verSh, frSh);
 
@@ -618,12 +680,23 @@ void init(void) {
 	light.Ia = {0.2f, 0.2f, 0.2f};
 	light.Id = { 0.5f, 0.5f, 0.5f};
 	light.Is = { 1.0f, 1.0f, 1.0f};
+	light.position = { cam.position.x,cam.position.y,cam.position.z};
+
+	for(int i = 0; i < NUM_OF_LIGHTS; i++) 
+	{
+		lights[i].Ia = {0.2f, 0.2f, 0.2f};
+		lights[i].Id = { 0.5f, 0.5f, 0.5f};
+		lights[i].Is = { 1.0f, 1.0f, 1.0f};
+		lights[i].position = { cam.position.x, cam.position.y, cam.position.z};
+
+		RotationOfLight(lights[i].position, cam.rotation.x, cam.rotation.y, cam.rotation.z);
+	}
 
 
 	// Setup OpenGL buffers for rendering of the meshes
 	Mesh * mesh = meshList;
 	while (mesh != NULL) {
-		totalNumOfModel = totalNumOfModel+ 1;
+		totalNumOfModel = totalNumOfModel + 1;
 		prepareMesh(mesh);
 		mesh = mesh->next;
 	}
@@ -683,13 +756,13 @@ int main(int argc, char **argv) {
 
 	// Insert the 3D models you want in your scene here in a linked list of meshes
 	// Note that "meshList" is a pointer to the first mesh and new meshes are added to the front of the list
-	insertModel(&meshList, cow.nov, cow.verts, cow.nof, cow.faces, 20.0);
+	// insertModel(&meshList, cow.nov, cow.verts, cow.nof, cow.faces, 20.0);
 //	insertModel(&meshList, triceratops.nov, triceratops.verts, triceratops.nof, triceratops.faces, 3.0);
-//	insertModel(&meshList, bunny.nov, bunny.verts, bunny.nof, bunny.faces, 60.0);
-//	insertModel(&meshList, cube.nov, cube.verts, cube.nof, cube.faces, 5.0);
+	insertModel(&meshList, bunny.nov, bunny.verts, bunny.nof, bunny.faces, 60.0);
+	// insertModel(&meshList, cube.nov, cube.verts, cube.nof, cube.faces, 5.0);
 	 //insertModel(&meshList, frog.nov, frog.verts, frog.nof, frog.faces, 2.5);
 //	insertModel(&meshList, knot.nov, knot.verts, knot.nof, knot.faces, 1.0);
-//	insertModel(&meshList, sphere.nov, sphere.verts, sphere.nof, sphere.faces, 5.0);
+	// insertModel(&meshList, sphere.nov, sphere.verts, sphere.nof, sphere.faces, 5.0);
 	//insertModel(&meshList, teapot.nov, teapot.verts, teapot.nof, teapot.faces, 3.0);
 
 

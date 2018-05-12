@@ -47,5 +47,7 @@ void ModelTransforamtions(Matrix &W,double x, double y, double z, double rotatio
 void ScaleModel(Matrix &S,double x, double y, double z);
 
 void RotationOfLight(Vector& V, float rotationX, float rotationY, float rotationZ);
+
+void SetLightPositon(Vector& pos, float x, float y, float z);
 #endif
 
