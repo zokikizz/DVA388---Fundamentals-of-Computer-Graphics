@@ -283,7 +283,6 @@ void renderMesh(Mesh *mesh) {
 				tempVarName[strlen(name)] = '\0';
 				strcat(tempVarName, ".ambient");
 				tempVarName[strlen(tempVarName)] = '\0';
-
 				
 				// light
 				GLint loc_lightAmbient = glGetUniformLocation(shprg, tempVarName);
@@ -435,8 +434,6 @@ void renderMesh(Mesh *mesh) {
 		glUniform1i(loc_multiLights, isMutplelightsMode);
 	}
 
-
-
 	// Select current resources
 	glBindVertexArray(mesh->vao);
 
@@ -445,13 +442,6 @@ void renderMesh(Mesh *mesh) {
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
-
-//	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-//	glEnable(GL_CULL_FACE);
-//	glCullFace(GL_BACK);
-//	glFrontFace(GL_CCW);
-
 
 //	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	// Draw all triangles
@@ -466,20 +456,12 @@ void display(void) {
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// Assignment 1: Calculate the transform to view coordinates yourself
-	// The matrix V should be calculated from camera parameters
-	// Therefore, you need to replace this hard-coded transform.
 	V.e[0] = 1.0f; V.e[4] = 0.0f; V.e[ 8] = 0.0f; V.e[12] = 0.0f;
 	V.e[1] = 0.0f; V.e[5] = 1.0f; V.e[ 9] = 0.0f; V.e[13] = 0.0f;
 	V.e[2] = 0.0f; V.e[6] = 0.0f; V.e[10] = 1.0f; V.e[14] = 0.0f;
 	V.e[3] = 0.0f; V.e[7] = 0.0f; V.e[11] = 0.0f; V.e[15] =   1.0f;
 
 	Transformations(V, cam.position.x, cam.position.y, cam.position.z, cam.rotation.x, cam. rotation.y, cam.rotation.z);
-
-
-	// Assignment 1: Calculate the projection transform yourself
-	// The matrix P should be calculated from camera parameters
-	// Therefore, you need to replace this hard-coded transform.
 
 	// aspect ratio is connected to resolution (if it is 640x480 then it is 4]3) for full hd is 16:9
 
@@ -491,18 +473,6 @@ void display(void) {
 
 	// This finds the combined view-projection matrix
 	PV = MatMatMul(P, V);
-
-	//light
-
-
-	//SetLightPositon(light.position, cam.position.x, cam.position.y, cam.position.z);
-
-	// SetLightPositon(lights[0].position, cam.position.x, cam.position.y, cam.position.z);
-
-	//RotationOfLight(light.position, -cam.rotation.x, -cam.rotation.y, -cam.rotation.z);
-
-	//	RotationOfLight(lights[0].position, -cam.rotation.x, -cam.rotation.y, -cam.rotation.z);
-
 
 	// Select the shader program to be used during rendering
 	glUseProgram(shprg);
@@ -526,7 +496,7 @@ void changeSize(int w, int h) {
 }
 
 void keypress(unsigned char key, int x, int y) {
-	fprintf(stderr, "cartoonShadeing: %d \n", cartoonShading);
+	// fprintf(stderr, "cartoonShadeing: %d \n", cartoonShading);
 	// PrintVector("0.position of lights[0]",lights[0].position);
 	Mesh *currentModel = meshList;
 	int i = 0;
@@ -769,10 +739,10 @@ int main(int argc, char **argv) {
 	// Insert the 3D models you want in your scene here in a linked list of meshes
 	// Note that "meshList" is a pointer to the first mesh and new meshes are added to the front of the list
 	// insertModel(&meshList, cow.nov, cow.verts, cow.nof, cow.faces, 20.0);
-//	insertModel(&meshList, triceratops.nov, triceratops.verts, triceratops.nof, triceratops.faces, 3.0);
-	insertModel(&meshList, bunny.nov, bunny.verts, bunny.nof, bunny.faces, 60.0);
+	insertModel(&meshList, triceratops.nov, triceratops.verts, triceratops.nof, triceratops.faces, 3.0);
+//	insertModel(&meshList, bunny.nov, bunny.verts, bunny.nof, bunny.faces, 60.0);
 	// insertModel(&meshList, cube.nov, cube.verts, cube.nof, cube.faces, 5.0);
-	 //insertModel(&meshList, frog.nov, frog.verts, frog.nof, frog.faces, 2.5);
+	//  insertModel(&meshList, frog.nov, frog.verts, frog.nof, frog.faces, 2.5);
 //	insertModel(&meshList, knot.nov, knot.verts, knot.nof, knot.faces, 1.0);
 	// insertModel(&meshList, sphere.nov, sphere.verts, sphere.nof, sphere.faces, 5.0);
 	//insertModel(&meshList, teapot.nov, teapot.verts, teapot.nof, teapot.faces, 3.0);

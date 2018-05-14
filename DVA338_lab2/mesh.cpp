@@ -55,10 +55,6 @@ void insertModel(Mesh **list, int nv, float * vArr, int nt, int * tArr, float sc
 		mesh->triangles[i].vInds[2] = tArr[i * 3 + 2];
 	}
 
-	// Assignment 1:
-	// Calculate and store suitable vertex normals for the mesh here.
-	// Replace the code below that simply sets some arbitrary normal values
-
 	Vector normalA;
 	for(int i =0; i < nt; i++)
 	{
