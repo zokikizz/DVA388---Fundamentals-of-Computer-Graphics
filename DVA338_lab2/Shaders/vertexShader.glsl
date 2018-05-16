@@ -59,7 +59,6 @@ uniform int multipleLights;
 vec3 caculateColorForOneLight(int index, vec3 normal)
 {
     vec3 ambient = material.ambient * lights[index].ambient;
-
     
     vec3 norm = normalize(normal);
     vec3 vertPos = vec3(modelMatrix * vec4(vPos, 1.0));

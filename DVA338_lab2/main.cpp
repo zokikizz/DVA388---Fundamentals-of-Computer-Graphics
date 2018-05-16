@@ -739,12 +739,12 @@ int main(int argc, char **argv) {
 	// Insert the 3D models you want in your scene here in a linked list of meshes
 	// Note that "meshList" is a pointer to the first mesh and new meshes are added to the front of the list
 	// insertModel(&meshList, cow.nov, cow.verts, cow.nof, cow.faces, 20.0);
-	insertModel(&meshList, triceratops.nov, triceratops.verts, triceratops.nof, triceratops.faces, 3.0);
+	// insertModel(&meshList, triceratops.nov, triceratops.verts, triceratops.nof, triceratops.faces, 3.0);
 //	insertModel(&meshList, bunny.nov, bunny.verts, bunny.nof, bunny.faces, 60.0);
 	// insertModel(&meshList, cube.nov, cube.verts, cube.nof, cube.faces, 5.0);
 	//  insertModel(&meshList, frog.nov, frog.verts, frog.nof, frog.faces, 2.5);
 //	insertModel(&meshList, knot.nov, knot.verts, knot.nof, knot.faces, 1.0);
-	// insertModel(&meshList, sphere.nov, sphere.verts, sphere.nof, sphere.faces, 5.0);
+	insertModel(&meshList, sphere.nov, sphere.verts, sphere.nof, sphere.faces, 5.0);
 	//insertModel(&meshList, teapot.nov, teapot.verts, teapot.nof, teapot.faces, 3.0);
 
 

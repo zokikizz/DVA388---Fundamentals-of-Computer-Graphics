@@ -1,7 +1,9 @@
 #ifndef _RAY_H_
 #define _RAY_H_
 
+#pragma once
 #include "Vec3.h"
+// #include "Sphere.h"
 
 class Ray {
 public:

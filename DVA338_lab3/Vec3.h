@@ -2,6 +2,7 @@
 #define _VEC3_H_
 
 #include "math.h"
+#include "stdio.h"
 
 template<class T>
 class Vec3 {
@@ -44,6 +45,9 @@ public:
 	Vec3<T> cross(const Vec3 &v) const { return Vec3<T>(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x); }
 	
 	Vec3<T> multCoordwise(const Vec3 &v) const { return Vec3<T>(x * v.x, y * v.y, z * v.z); }
+
+	void printVector() const { fprintf(stderr, "%f, %f, %f\n", this->x, this->y, this->z);}
+
 };
 
 template<class T>

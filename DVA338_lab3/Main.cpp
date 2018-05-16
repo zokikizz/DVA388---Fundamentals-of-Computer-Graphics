@@ -7,8 +7,9 @@
 #endif
 
 
-#include<vector>
-#include<iostream>
+#include <vector>
+#include <iostream>
+#include <stdio.h>
 using namespace std;
 
 #include <GL/glut.h>
@@ -16,11 +17,11 @@ using namespace std;
 #include "Image.h"
 #include "Ray.h"
 #include "Sphere.h"
+#include "Camera.h"
 
+Camera cam;
+Light light;
 
-
-float one = 1.0f;
-float zero = 0.0f;
 
 class Scene {
 public:
@@ -31,7 +32,7 @@ public:
 	}
 	void add(const Sphere & s) {
 		spheres.push_back(s); 
-		//cout << "Sphere added: " << "r = " << spheres[spheres.size()-1].r << endl;
+		cout << "Sphere added: " << "r = " << spheres[spheres.size()-1].r << endl;
 	}
 
 	void load(char * fileName) {
@@ -75,7 +76,7 @@ public:
 
 	void searchClosestHit(const Ray & ray, HitRec & hitRec) {
 		for (int i = 0; i < scene->spheres.size(); i++) {
-			scene->spheres[i].hit(ray, hitRec);
+			scene->spheres[i].hit(ray, hitRec);			
 		}
 	}
 
@@ -83,7 +84,8 @@ public:
 		Ray ray;
 		HitRec hitRec;
 		//bool hit = false;
-		ray.o = Vec3f(0.0f, 0.0f, 0.0f); //Set the start position of the eye rays to the origin
+		//ray.o = Vec3f(0.0f, 0.0f, 0.0f); //Set the start position of the eye rays to the origin
+		ray.o = cam.position; 
 
 		for (int y = 0; y < image->getHeight(); y++) {
 			for (int x = 0; x < image->getWidth(); x++) {
@@ -91,11 +93,15 @@ public:
 				hitRec.anyHit = false;
 				searchClosestHit(ray, hitRec);
 				if (hitRec.anyHit) {
-					image->setPixel(x, y, Vec3f(1.0f, 0.0f, 0.0f));
-					glSetPixel(x, y, Vec3f(1.0f, 0.0f, 0.0f));
+
+					Vec3f color = scene->spheres[hitRec.primIndex].color(hitRec, light, cam);
+				 
+					image->setPixel(x, y, color);
+					glSetPixel(x, y, color);
 				} else {
-					image->setPixel(x, y, Vec3f(0.0f, 0.0f, 1.0f));
-					glSetPixel(x, y, Vec3f(0.0f, 0.0f, 1.0f));
+					// background black
+					image->setPixel(x, y, Vec3f(0.0f, 0.0f, 0.0f));
+					glSetPixel(x, y, Vec3f(0.0f, 0.0f, 0.0f));
 				}
 			}
 		}
@@ -106,14 +112,15 @@ public:
 SimpleRayTracer * rayTracer;
 
 void display(void) {
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
+	glTranslatef(cam.position.x,cam.position.y,cam.position.z);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
 	rayTracer->fireRays();
 	
-
+	max(0.0f, 1.0f);
 	glFlush();
 }
 
@@ -124,20 +131,62 @@ void changeSize(int w, int h) {
 	glViewport(0,0,w,h);
 }
 
+void keypress(unsigned char key, int x, int y)
+{
+	switch(key) {
+		case 'x':
+			cam.position.x += 1.0f;
+			break;
+		case 'X':
+			cam.position.x -= 1.0f;
+			break;
+			
+		case 'y':
+			cam.position.y += 1.0f;
+			break;
+		case 'Y':
+			cam.position.y -= 1.0f;
+			break;
+			
+		case 'z':
+			cam.position.z += 1.0f;
+			break;
+		case 'Z':
+			cam.position.z -= 1.0f;
+			break;
+		case 'Q':
+		case 'q':
+			glutLeaveMainLoop();
+			break;
+
+	}
+
+	glutPostRedisplay();
+}
+
 void init(void)
 {
 	
-	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
 	glutInitWindowSize(640, 480);
 	glutCreateWindow("SimpleRayTracer");
 	glutDisplayFunc(display);
 	glutReshapeFunc(changeSize);
-	//glutKeyboardFunc(keypress);
+	glutKeyboardFunc(keypress);
+
+	// camera position
+	
+	cam.position = Vec3f(0.0f, 0.0f, 0.0f);
 
 	glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
 
 	Scene * scene = new Scene;
-	scene->add(Sphere(Vec3f(0.0f, 0.0f, -10.0f), 3.0f));
+	scene->add(Sphere(Vec3f(0.0f, 0.0f, -10.0f), 2.0f, 32.f, Vec3f(1.0f, 0.5f, 0.31f), Vec3f(1.0f, 0.5f, 0.31f), Vec3f(0.5f, 0.5f, 0.5f)));
+
+	light.position = cam.position;
+	light.Ia = Vec3f(0.2f, 0.2f, 0.2f);
+	light.Id = Vec3f(0.5f, 0.5f, 0.5f);
+	light.Is = Vec3f( 1.0f, 1.0f, 1.0f);
 
 	Image * image = new Image(640, 480);	
 	
