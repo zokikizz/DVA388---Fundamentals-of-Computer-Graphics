@@ -73,7 +73,7 @@ void Sphere::computeSurfaceHitFields(const Ray & r, HitRec & rec) const {
 	rec.n = (rec.p - c).normalize();
 }
 
-Vec3f Sphere::color(HitRec &hitRec, Light &light, Camera &cam)
+Vec3f Sphere::Phong(HitRec &hitRec, Light &light, Camera &cam)
 {
 	Vec3f ambient = light.Ia.multCoordwise(this->Ka);
 			

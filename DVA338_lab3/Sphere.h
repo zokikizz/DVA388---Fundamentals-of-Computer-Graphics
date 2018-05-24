@@ -32,7 +32,7 @@ public:
 
 	bool hit(const Ray & r, HitRec & rec) const;
 	void computeSurfaceHitFields(const Ray & r, HitRec & rec) const;
-	Vec3f color(HitRec &rec, Light &light, Camera &cam);
+	Vec3f Phong(HitRec &rec, Light &light, Camera &cam);
 	Vec3f GetColor(Vec3f direction);
 	MappedCoords MapObjectCoords(Vec3f normal);
 };

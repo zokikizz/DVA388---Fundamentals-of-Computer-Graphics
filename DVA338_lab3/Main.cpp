@@ -134,7 +134,7 @@ public:
 		
 		// ray_count+=1;
 
-		if(count < 3)
+		if(count <= 3)
 		{
 			// hit
 			Vec3f l = (light.position - hr.p).normalize();
@@ -216,6 +216,7 @@ public:
 		searchClosestHit(shadowr, shadow);
 
 		Vec3f color = light.Ia.multCoordwise(scene->spheres[hr.primIndex].GetColor(hr.n));
+	
 		// ray_count+=1;
 	
 		if (!shadow.anyHit)
@@ -333,10 +334,10 @@ void keypress(unsigned char key, int x, int y)
 			break;
 	
 		case 'r':
-			light.position.z += 1.0f;
+			light.position.y += 1.0f;
 			break;
 		case 'e':
-			light.position.z -= 1.0f;
+			light.position.y -= 1.0f;
 			break;
 
 
@@ -370,9 +371,9 @@ void init(void)
 
 	Scene * scene = new Scene;
 	
-	Sphere s = Sphere(Vec3f(0.0f, 0.0f, -10.0f), 2.0f, 32.f, Vec3f(1.0f, 0.5f, 0.31f), Vec3f(1.0f, 0.5f, 0.31f), Vec3f(0.5f, 0.5f, 0.5f));
+	Sphere s = Sphere(Vec3f(0.0f, 0.0f, -10.0f), 2.0f, 32.f, Vec3f(0.021f, 0.174f, 0.021f), Vec3f(0.075f, 0.614f, 0.075f), Vec3f(0.633f, 0.727f, 0.633f));
 	
-	s.textrure = readBMP("./img/moon.bmp", s.txtW, s.txtH);
+	s.textrure = readBMP("./img/checkersbig.bmp", s.txtW, s.txtH);
 	
 	fprintf(stderr, "end text.");
 	scene->add(s);
