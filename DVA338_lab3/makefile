@@ -1,5 +1,5 @@
 cc:
-	g++ -o raytrace -O3 *.cpp -lGL -lGLU -lglut
+	g++ -fopenmp -lm -o raytrace -O3 *.cpp -lGL  -lgomp -lGLU -lglut
 
 clean:
 	rm -f ./raytrace

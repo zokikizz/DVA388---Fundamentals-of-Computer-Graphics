@@ -1,9 +1,13 @@
 
+#pragma once
 #include "Sphere.h"
 
 #include "stdio.h"
 #include <iostream>
 using namespace std;
+
+#include <math.h>
+#include <algorithm>
 
 
 bool Sphere::hit(const Ray & r, HitRec & rec) const {	
@@ -87,6 +91,52 @@ Vec3f Sphere::color(HitRec &hitRec, Light &light, Camera &cam)
 
 	Vec3f res = ambient + diffuse + specular;
 	return res;
+}
+
+
+Vec3f Sphere::GetColor(Vec3f normal)
+{
+	if(textrure == NULL)
+		return Ka;
+	else
+	{
+		Vec3f color;
+		
+		// float u = atan2(normal.x, normal.z) / (2*M_PI) + 0.5;
+		// float v = normal.y * 0.5 + 0.5;
+
+		float phi= atan2(normal.x, normal.z);
+
+        if(phi < 0.0)
+            phi += 2*M_PI;
+
+		float u = phi / (2*M_PI);
+		float v = ( M_PI  - acos(normal.y)) / M_PI;
+
+		// fprintf(stderr, "%f %f \n", u, v);
+
+		int row= (int) ((txtH - 1) * v);
+		int column = (int) ((txtW - 1) * u);
+
+		int value = 3*512*row + 3*column;
+
+
+		// fprintf(stderr, "%d %d %d \n", textrure[value], textrure[value+1],textrure[value+2]);
+
+		color.x = textrure[value]/(float)255;
+		color.y = textrure[value + 1]/(float)255;
+		color.z = textrure[value + 2]/(float)255;
+
+
+
+		return color;
+	}
+}
+
+MappedCoords Sphere::MapObjectCoords(Vec3f normal) {
+    float u = 0.5 + atan2(normal.z, normal.x)/(2 * M_PI);
+    float v = 0.5 - asin(normal.y)/M_PI;
+    return MappedCoords{u, v};
 }
 
 

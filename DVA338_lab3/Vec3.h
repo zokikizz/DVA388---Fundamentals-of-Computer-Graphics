@@ -3,6 +3,8 @@
 
 #include "math.h"
 #include "stdio.h"
+#include <iostream>
+using namespace std;
 
 template<class T>
 class Vec3 {
@@ -47,6 +49,17 @@ public:
 	Vec3<T> multCoordwise(const Vec3 &v) const { return Vec3<T>(x * v.x, y * v.y, z * v.z); }
 
 	void printVector() const { fprintf(stderr, "%f, %f, %f\n", this->x, this->y, this->z);}
+
+	Vec3<T> clamp(float upper, float lower)
+    {
+		
+		float x = this->x;
+		float y = this->y;
+		float z = this->z;
+		
+		// Vec3<T>(x, y,z).printVector();
+		return Vec3<T>(min(upper, max(x , lower)), min(upper, max(y , lower)),min(upper, max(z , lower)));
+    }
 
 };
 
